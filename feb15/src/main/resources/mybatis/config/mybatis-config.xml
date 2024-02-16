@@ -7,5 +7,6 @@
 	<typeAliases>
 		<typeAlias type="org.nallume.dto.BoardDTO" alias="boardDTO" />
 		<typeAlias type="org.nallume.dto.MemberDTO" alias="memberDTO" />
+		<typeAlias type="org.nallume.dto.WriteDTO" alias="writeDTO" />
 	</typeAliases>	
 </configuration>

@@ -12,4 +12,13 @@ public class Util {
 		
 		return num; 
 	}
+	
+	public int str2Int2(String str) {
+		try {
+			return Integer.parseInt(str);
+		} catch (Exception e) {
+			return 0;
+		}
+	}
+	
 }

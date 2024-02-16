@@ -45,17 +45,22 @@
         <section class="page-section" id="services">
             <div class="container">
                 <div class="text-center">
-                    <h2 class="section-heading text-uppercase">게시판</h2>
+                    <h2 class="section-heading text-uppercase">톺아보기</h2>
                 </div>
-                <div class="row text-center">					
-					${detail.board_no }
-					${detail.board_title}
-					${detail.mname}
-					${detail.board_date}
-					${detail.board_content}
+                <div class="card mb-4" style="min-height: 500px">
+                	<div class="card-body">
+                		<div class="h3">${detail.board_title}</div>
+                		<div class="row p-2 bg-secondary">
+                			<div class="col align-middle text-start">${detail.mname}</div>
+                			<div class="col align-middle text-end">${detail.board_date}</div>
+                		</div>
+                		<div class="mt-4 h-auto">${detail.board_content}</div>
+                	</div>					
                 </div>
+	        <button class="btn btn-warning" onclick="history.back()">게시판으로</button>
             </div>
-        </section>        
+        </section>
+             
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->

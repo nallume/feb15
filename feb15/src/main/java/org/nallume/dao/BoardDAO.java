@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.nallume.dto.BoardDTO;
+import org.nallume.dto.WriteDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -21,8 +22,13 @@ public class BoardDAO {
 	public Map<String, Object> detail(int no) {
 		return sqlSession.selectOne("board.detail", no);
 	}
-	public BoardDTO detail2(String no) {
+	
+	public BoardDTO detail2(int no) {
 		return sqlSession.selectOne("board.detail2", no);
+	}
+
+	public int write(WriteDTO dto) {
+		return sqlSession.insert("board.write", dto);
 	}
 	
 }

@@ -5,20 +5,29 @@
 
 <mapper namespace="board">
 	<select id="boardList" resultType="boardDTO">
-		SELECT * FROM boardview LIMIT 0, 10
+		SELECT board_no, board_title, mname, board_date, board_count, comment 
+		FROM boardview LIMIT 0, 10 
 	</select>
 	
 	<select id="detail" parameterType="int" resultType="Map">
-		SELECT board_no, board_title, board_content, 
-		(SELECT mname FROM member WHERE mno = board.mno) AS mname, board_date, board_ip 
-		FROM board 
+		SELECT b.board_no, b.board_title, b.board_content, m.mname, b.board_date, b.board_ip, b.board_del 
+		FROM board b JOIN member m ON b.mno=m.mno 
 		WHERE board_no=#{no} 
 	</select>
 
-	<select id="detail2" parameterType="String" resultType="boardDTO">
+	<select id="detail2" parameterType="Integer" resultType="boardDTO">
 		SELECT board_no, board_title, board_content, 
-		(SELECT mname FROM member WHERE mno = board.mno) AS mname, board_date, board_ip 
+		(SELECT mname FROM member WHERE mno = board.mno) AS mname, board_date, board_ip, board_del 
 		FROM board 
-		WHERE board_no=#{no} 
+		WHERE board_no=#{no} AND board_del='1' 
 	</select>
+	
+	<insert id="write" parameterType="writeDTO">
+		INSERT INTO board (board_title, board_content, mno) 
+		VALUES (#{title}, #{content}, (SELECT mno FROM member WHERE mid=#{mid})) 
+		<selectKey resultType="Integer" keyProperty="board_no" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
 </mapper>

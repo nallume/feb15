@@ -36,6 +36,25 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
         <link href="css/board.css" rel="stylesheet" />
+    <script type="text/javascript">
+    	function writeCheck(){
+    		//alert("글쓰기 버튼을 눌렀습니다");
+    		let title = document.querySelector("#title");
+    		let content = document.querySelector("#content");
+    		//alert(title.value + content.value);
+    		
+    		if(title.value.length < 5){
+    			alert("제목은 다섯 글자 이상이어야 합니다.");
+    			title.focus();
+	    		return false;   			
+    		}
+    		if(content.value.length < 10){
+    			alert("본문 내용은 열 글자 이상이어야 합니다.");
+	 	   		content.focus();
+    			return false;			
+    		}
+    	}
+    </script>
     </head>
     <body id="page-top">
         <!-- Navigation-->
@@ -73,9 +92,35 @@
 							</c:forEach>
 						</tbody>
 					</table>
+					<!-- 페이징 -->
+					
+					<!-- 글쓰기 -->
+					<button type="button" class="btn btn-info" style="width: 100px" data-bs-toggle="modal" data-bs-target="#write">글쓰기</button>
                 </div>
             </div>
-        </section>        
+        </section> 
+        
+        <!-- 글쓰기 모달 만들기 -->
+        <div class="modal" id="write">
+        	<div class="modal-dialog modal-xl">
+        		<div class="modal-content">
+        			<div class="modal-header">
+        				<h4 class="modal-title">글쓰기 창입니다</h4>
+        				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        			</div>
+        			<div class="modal-body">
+        				<div class="mt-2">
+	        				<form action="./write" method="post" onsubmit="return writeCheck()" name="frm">
+	        					<input type="text" name="title" class="form-control mb-2" id="title" required="required" placeholder="제목을 입력하세요.">
+	        					<textarea name="content" class="form-control mb-2 vh-500" id="content" required="required"></textarea>
+	        					<button type="submit" class="btn btn-info">글쓰기</button>
+	        				</form>
+        				</div>
+        			</div>
+        		</div>
+        	</div>
+        </div>
+               
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
