@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.nallume.dao.BoardDAO;
 import org.nallume.dto.BoardDTO;
+import org.nallume.dto.CommentDTO;
 import org.nallume.dto.WriteDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,15 @@ public class BoardService {
 	public int write(WriteDTO dto) {
 		dto.setMid("farmer");
 		return boardDAO.write(dto);
+	}
+
+	public int commentWrite(CommentDTO comment) {
+		comment.setMid("newbe");
+		return boardDAO.commentWrite(comment);
+	}
+
+	public List<CommentDTO> commentsList(int no) {
+		return boardDAO.commentsList(no);
 	}
 
 	

@@ -36,6 +36,12 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
         <link href="css/board.css" rel="stylesheet" />
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script type="text/javascript">
+        function deletePost(){
+        	swal("진짜 삭제?", {buttons:["삭제합니다", true]});
+        }
+        </script>
     </head>
     <body id="page-top">
         <!-- Navigation-->
@@ -49,7 +55,10 @@
                 </div>
                 <div class="card mb-4" style="min-height: 500px">
                 	<div class="card-body">
-                		<div class="h3">${detail.board_title}</div>
+                		<div class="h3">${detail.board_title}
+                		<img alt="edit" src="./img/edit.png" onclick="edit(${detail.board_no})">
+                		<img alt="delete" src="./img/delete.png" title="글삭제" onclick="deletePost(${detail.board_no})">
+                		</div>
                 		<div class="row p-2 bg-secondary">
                 			<div class="col align-middle text-start">${detail.mname}</div>
                 			<div class="col align-middle text-end">${detail.board_date}</div>
@@ -57,8 +66,38 @@
                 		<div class="mt-4 h-auto">${detail.board_content}</div>
                 	</div>					
                 </div>
-	        <button class="btn btn-warning" onclick="history.back()">게시판으로</button>
-            </div>
+	        	<button class="btn btn-warning" onclick="history.back()">게시판으로</button>
+	        
+	        	<hr>
+	        	<!-- 댓글쓰기창 -->
+	        	<div class="">
+	        		<form action="./commentWrite" method="post">
+	     	   		<div class="row">
+	        			<div class="col-8 col-xs-8 col-sm-10 col-md-11 col-xl-11 p-0">
+		        			<textarea class="form-control" name="comment"></textarea>
+	        			</div>
+	        			<div class="col-4 col-xs-4 col-sm-2 col-md-1 col-xl-1 p-0">
+		        			<button class="btn btn-primary">댓글쓰기</button>
+	        			</div>
+	        		</div>
+	        		<input type="hidden" name="no" value="${detail.board_no }">
+	        		</form>
+	        	</div>
+	        	<!-- 댓글출력창 -->
+	        	<div class="mt-2">
+		        	<c:forEach items="${commentsList }" var="c">
+	        		<div class="my-4">
+	        			<div class="bg-warning text-dark row my-2 p-2">
+	        				<div class="col-6">${c.mname }</div>
+	        				<div class="col-2">${c.cip }</div>
+	        				<div class="col-2">${c.cdate }</div>
+	        				<div class="col-2">${c.clike }</div>
+	        			</div>
+	        			<div class="mx-5 mt-1" style="min-height:80px">${c.comment }</div>
+	        		</div>
+		        	</c:forEach>
+	        	</div>
+            </div>            
         </section>
              
         <!-- Bootstrap core JS-->

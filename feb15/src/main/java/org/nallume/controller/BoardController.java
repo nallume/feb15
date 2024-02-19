@@ -1,10 +1,13 @@
 package org.nallume.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.ibatis.annotations.Param;
+import org.nallume.dto.BoardDTO;
+import org.nallume.dto.CommentDTO;
 import org.nallume.dto.WriteDTO;
 import org.nallume.service.BoardService;
 import org.nallume.util.Util;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class BoardController {
@@ -44,14 +48,26 @@ public class BoardController {
 	}
 
 	@GetMapping("/detail")
-	public String detail2(@Param("no") String no, Model model) {   //spring이 알아서 int타입에 맞게 형변환 해줌
+	public String detail2(@RequestParam(value = "no", defaultValue = "10", required = true) String no, Model model) {   //spring이 알아서 int타입에 맞게 형변환 해줌
 		//String no = request.getParameter("no");
 		//System.out.println(util.str2Int2(no));
 		
 		if(util.str2Int2(no) != 0) {
 			//0이 아님 = 정상 : db에 물어보기 / 값 가져오기 / 붙이기 / 이동하기
-			model.addAttribute("detail", boardService.detail2(util.str2Int2(no)));
+			BoardDTO detail = boardService.detail2(util.str2Int2(no));
+			model.addAttribute("detail", detail);
+			//System.out.println("여기까진");
+			
+			//24-02-19  댓글 출력
+			System.out.println("댓글 수 : "+ detail.getComment());
+			if (detail.getComment() > 0) {
+				List<CommentDTO> commentsList = boardService.commentsList(util.str2Int2(no));
+				model.addAttribute("commentsList", commentsList);
+				//System.out.println(commentsList.get(0).getMid());
+			}
+			
 			return "detail";
+			
 			
 		} else {
 			//0이야 = 비정상 : 에러로 페이지 이동하기
@@ -76,6 +92,13 @@ public class BoardController {
 		
 	}
 	
+	//댓글쓰기 24-02-19 
+	@PostMapping("/commentWrite")
+	public String commentWrite(CommentDTO comment) {
+		int result = boardService.commentWrite(comment);
+		System.out.println("결과 : " + result);
+		return "redirect:/detail?no="+comment.getNo();
+	}
 	
 	
 }

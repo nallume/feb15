@@ -36,6 +36,8 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
         <link href="css/board.css" rel="stylesheet" />
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script type="text/javascript">
     	function writeCheck(){
     		//alert("글쓰기 버튼을 눌렀습니다");
@@ -53,6 +55,36 @@
 	 	   		content.focus();
     			return false;			
     		}
+    	}
+    	
+    	function detail(no){
+    		//swal("good job", "상세보기", "success");  //title, text, icon
+    		/* swal({title:"good job", 
+    			text:"번호는" + no, 
+    			icon:"success",
+    			button:"좋아요"
+    			}); //title, text, icon, button 버튼까지 넣으려면 이렇게 */ 
+    		
+    		//모달 보이기
+    		let detailModal = new bootstrap.Modal('#detail', {});  // {옵션}
+    		//$("#modalTitle").text(no); //값 바꾸기
+    		//$("#modalContent").text("변경된 내용입니다."); //값 바꾸기   		
+    		//detailModal.show(); //함수 실행되면 detailModal이 나타나게
+    			
+     		$.ajax({
+    			url : "/restDetail",
+    			type : "post",
+    			dataType : "json",
+    			data : {'no' : no},
+    			success : function(data){
+    				$("#modalTitle").text(data.board_title);
+    				$("#modalContent").html(data.board_content);
+    				detailModal.show();
+    			},
+    			error : function(){
+    				alert(error);
+    			}      			
+    		}); 
     	}
     </script>
     </head>
@@ -80,10 +112,12 @@
 						<tbody>
 							<c:forEach items="${list }" var="row">
 							<tr>
-								<td>${row.board_no }</td>
+								<td onclick="detail(${row.board_no})">${row.board_no }</td>
 								<td class="title">
-								<a href="./detail?no=${row.board_no }">${row.board_title } 
-								<c:if test="${row.comment gt 0 }">[${row.comment }]</c:if></a>
+									<a href="./detail?no=${row.board_no }"> 
+										${row.board_title } 
+										<c:if test="${row.comment gt 0 }">[${row.comment }]</c:if>
+									</a> 
 								</td>
 								<td>${row.mname }</td>
 								<td>${row.board_date }</td>
@@ -116,6 +150,30 @@
 	        					<button type="submit" class="btn btn-info">글쓰기</button>
 	        				</form>
         				</div>
+        			</div>
+        			<div class="modal-footer">
+        				모달 foot
+        			</div>
+        		</div>
+        	</div>
+        </div>
+
+        <!-- 톺아보기 모달 만들기 -->
+        <div class="modal" id="detail">
+        	<div class="modal-dialog modal-xl">
+        		<div class="modal-content">
+        			<div class="modal-header">
+        				<h4 class="modal-title" id="modalTitle">톺아보기</h4>
+        				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        			</div>
+        			<div class="modal-body">
+        				<div class="mt-2" id="modalContent">
+	        				제목<br>
+	        				본문내용
+        				</div>
+        			</div>
+        			<div class="modal-footer">
+        				톺아보기 모달 닫기
         			</div>
         		</div>
         	</div>

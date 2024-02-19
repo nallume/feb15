@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.nallume.dto.BoardDTO;
+import org.nallume.dto.CommentDTO;
 import org.nallume.dto.WriteDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -29,6 +30,14 @@ public class BoardDAO {
 
 	public int write(WriteDTO dto) {
 		return sqlSession.insert("board.write", dto);
+	}
+
+	public int commentWrite(CommentDTO comment) {
+		return sqlSession.insert("board.commentWrite", comment);
+	}
+
+	public List<CommentDTO> commentsList(int no) {	
+		return sqlSession.selectList("board.commentsList", no);
 	}
 	
 }
