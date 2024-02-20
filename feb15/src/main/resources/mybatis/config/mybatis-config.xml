@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE configuration
-  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
-  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "https://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
 	<typeAliases>
@@ -9,5 +7,6 @@
 		<typeAlias type="org.nallume.dto.MemberDTO" alias="memberDTO" />
 		<typeAlias type="org.nallume.dto.WriteDTO" alias="writeDTO" />
 		<typeAlias type="org.nallume.dto.CommentDTO" alias="commentDTO" />
+		<typeAlias type="org.nallume.dto.LoginDTO" alias="loginDTO" />
 	</typeAliases>	
 </configuration>

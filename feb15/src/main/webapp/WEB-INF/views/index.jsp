@@ -38,7 +38,7 @@
     </head>
     <body id="page-top">
         <!-- Navigation-->
-		<c:import url="menu.jsp"/>
+		<%@ include file="menu.jsp" %>
         <!-- Masthead-->
         <header class="masthead">
             <div class="container">

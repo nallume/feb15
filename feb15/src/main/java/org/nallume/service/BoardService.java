@@ -3,6 +3,9 @@ package org.nallume.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.nallume.dao.BoardDAO;
 import org.nallume.dto.BoardDTO;
 import org.nallume.dto.CommentDTO;
@@ -16,9 +19,8 @@ public class BoardService {
 	@Autowired
 	private BoardDAO boardDAO;
 	
-	public List<BoardDTO> boardList(){
-		
-		return boardDAO.boardList();
+	public List<BoardDTO> boardList(int PageNo){		
+		return boardDAO.boardList(PageNo);
 	}
 	
 	public Map<String, Object> detail(int no) {
@@ -29,18 +31,27 @@ public class BoardService {
 		return boardDAO.detail2(no);
 	}
 
-	public int write(WriteDTO dto) {
-		dto.setMid("farmer");
+	public int write(WriteDTO dto, HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		dto.setMid((String)session.getAttribute("mid"));
 		return boardDAO.write(dto);
 	}
 
 	public int commentWrite(CommentDTO comment) {
-		comment.setMid("newbe");
+		//comment.setMid("newbe");
 		return boardDAO.commentWrite(comment);
 	}
 
 	public List<CommentDTO> commentsList(int no) {
 		return boardDAO.commentsList(no);
+	}
+
+	public int postDel(int no) {
+		return boardDAO.postDel(no);
+	}
+
+	public int totalCount() {
+		return boardDAO.totalCount();
 	}
 
 	

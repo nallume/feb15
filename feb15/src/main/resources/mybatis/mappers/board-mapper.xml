@@ -17,14 +17,14 @@
 		<result column="mno" property="mno"/>
 	</resultMap>
 
-	<select id="boardList" resultType="boardDTO">
+	<select id="boardList" parameterType="Integer" resultType="boardDTO">
 		SELECT board_no, board_title, mname, board_date, board_count, comment 
-		FROM boardview LIMIT 0, 10 
+		FROM boardview LIMIT #{pageNo}, 10 
 	</select>
 	
 	<select id="detail" parameterType="int" resultType="Map">
 		SELECT b.board_no, b.board_title, b.board_content, m.mname, b.board_date, b.board_ip, b.board_del, 
-		(SELECT COUNT(*) FROM comment WHERE b.board=#{board_no})comment 
+		(SELECT COUNT(*) FROM comment WHERE board_no=b.board_no) AS comment 
 		FROM board b JOIN member m ON b.mno=m.mno 
 		WHERE board_no=#{no} 
 	</select>
@@ -54,5 +54,15 @@
 		SELECT cno, ccomment, clike, cdate, mid, mname, cip, mno, board_no 
 		FROM commentview 
 		WHERE board_no=#{no}
+	</select>
+	
+	<update id="postDel" parameterType="Integer">
+		<![CDATA[
+		UPDATE board SET board_del='0' WHERE board_no=#{no}
+		]]>
+	</update>
+	
+	<select id="totalCount" resultType="Integer">
+		SELECT COUNT(*) FROM boardview
 	</select>
 </mapper>

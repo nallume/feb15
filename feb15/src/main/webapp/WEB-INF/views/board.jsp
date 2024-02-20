@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
 <!DOCTYPE html>
 <html lang="ko">
     <head>
@@ -86,11 +87,17 @@
     			}      			
     		}); 
     	}
+    	
+    //전자정부 페이징 이동 스크립트
+    function linkPage(pageNo){
+    	location.href = "./board?pageNo=" + pageNo;
+    }
+    	
     </script>
     </head>
     <body id="page-top">
         <!-- Navigation-->
-        <c:import url="menu.jsp"/>
+       	<%@ include file="menu.jsp" %>
         
         <!-- 게시판 -->
         <section class="page-section" id="services">
@@ -127,7 +134,9 @@
 						</tbody>
 					</table>
 					<!-- 페이징 -->
-					
+					<div>
+						<ui:pagination paginationInfo = "${paginationInfo}" type="image" jsFunction="linkPage"/>
+					</div>
 					<!-- 글쓰기 -->
 					<button type="button" class="btn btn-info" style="width: 100px" data-bs-toggle="modal" data-bs-target="#write">글쓰기</button>
                 </div>

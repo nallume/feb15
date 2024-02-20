@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.annotations.Param;
 import org.nallume.dto.BoardDTO;
@@ -17,6 +18,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
 @Controller
 public class BoardController {
@@ -33,9 +36,30 @@ public class BoardController {
 	}
 
 	
+	//페이징 추가하기 24-02-20
 	@GetMapping("/board")
-	public String board(Model model) {
-		model.addAttribute("list", boardService.boardList());
+	public String board(@RequestParam(value = "pageNo", required = false) String no, Model model) {
+		//pageNo가 오지 않는다면
+		int currentPageNo = 1;
+		if(util.str2Int2(no) > 0) { //여기 수정해야해
+			currentPageNo = Integer.parseInt(no);
+		}
+		
+		//전체 글 수 뽑아오기 totalCount
+		int totalRecordCount = boardService.totalCount();
+		//System.out.println("전체 글 수 : " + totalRecordCount);
+		
+		//pagination
+		PaginationInfo paginationInfo = new PaginationInfo();
+		paginationInfo.setCurrentPageNo(currentPageNo); //현재 페이지 번호
+		paginationInfo.setRecordCountPerPage(10); //한 페이지에 게시되는 게시물 건수
+		paginationInfo.setPageSize(10); //페이징 리스트의 사이즈 , 10페이지씩 보이기
+		paginationInfo.setTotalRecordCount(totalRecordCount);//전체 게시물 건수
+		
+		List<BoardDTO> list = boardService.boardList(paginationInfo.getFirstRecordIndex()); //첫번째 페이지 번호 가져오는 메소드
+		model.addAttribute("list", list);
+		//페이징 관련 정보가 있는 PaginationInfo객체를 모델에 반드시 넣어준다.
+		model.addAttribute("paginationInfo", paginationInfo);
 		return "board";
 	}
 	
@@ -58,7 +82,7 @@ public class BoardController {
 			model.addAttribute("detail", detail);
 			//System.out.println("여기까진");
 			
-			//24-02-19  댓글 출력
+			//24-02-19  댓글 출력 추가
 			System.out.println("댓글 수 : "+ detail.getComment());
 			if (detail.getComment() > 0) {
 				List<CommentDTO> commentsList = boardService.commentsList(util.str2Int2(no));
@@ -79,9 +103,9 @@ public class BoardController {
 	//글쓰기 (24-02-16)  : 내용 + 제목 받아 -> db로 보내 -> 저장 -> 그 뒤에? 보드로 돌아가기 내가 쓴 글로 넘어가는것도 괜찮은데 동적쿼리를 써야함 - 나중에..
 	@PostMapping("/write")
 	//public String write(@Param("title") String title, @Param("content") String content) {
-	public String write(WriteDTO dto) {
-		
-		int result = boardService.write(dto);  // 1 or 0
+	public String write(WriteDTO dto, HttpServletRequest request) {
+		//세션추가 24-02-20
+		int result = boardService.write(dto, request);  // 1 or 0
 		
 		//추가로 세션 관련 작업 더 필요함
 		if (result == 1) {
@@ -94,11 +118,22 @@ public class BoardController {
 	
 	//댓글쓰기 24-02-19 
 	@PostMapping("/commentWrite")
-	public String commentWrite(CommentDTO comment) {
+	public String commentWrite(CommentDTO comment, HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		comment.setMid((String)session.getAttribute("mid"));
+		
 		int result = boardService.commentWrite(comment);
 		System.out.println("결과 : " + result);
 		return "redirect:/detail?no="+comment.getNo();
 	}
 	
+	//글삭제
+	@PostMapping("/postDel")
+	public String postDel(@RequestParam("no") int no) {
+		//System.out.println("no : " + no);
+		int result = boardService.postDel(no);
+		System.out.println("result :" + result);
+		return "redirect:/board";
+	}
 	
 }
