@@ -84,12 +84,22 @@
         
         //댓글 공백 금지
         function commentCheck(){
-        	let commentText = document.querySelector("#comment");  	
-        	if(commentText.value.length < 1){
+        	let commentText = document.querySelector("#comment");
+        	let comment = commentText.value.replaceAll(" ", "");
+        	if(comment.length < 1){
         		alert("내용을 입력하세욥.");
         		commentText.focus();
         		return false;
         	}
+        }
+        
+        //댓글 지우기
+        function deleteComment(no){
+        	//Swal.fire("정말?", no + "번 글을 삭제합니다.", "warning");
+        	if(confirm("댓삭?")){
+	        	location.href="./deleteComment?no=${detail.board_no}&cno="+no; // 글번호 + 댓글번호 그냥 get으로 보냈다. 나중에 post로 보내주면 좋겠지        		
+        	}
+        	//ajax로 화면전환없이 고 부분만 없애주기(예전에 했엇음)
         }
         
         
@@ -108,12 +118,12 @@
                 <div class="card mb-4" style="min-height: 500px">
                 	<div class="card-body">
                 		<div class="h3">${detail.board_title}
-                		<img alt="edit" src="./img/edit.png" title="글 수정" onclick="edit(${detail.board_no})">
-                		<img alt="delete" src="./img/delete.png" title="글 삭제" onclick="deletePost(${detail.board_no})">
                 		</div>
                 		<div class="row p-2 bg-secondary">
-                			<div class="col align-middle text-start">${detail.mname}</div>
-                			<div class="col align-middle text-end">${detail.board_date}</div>
+                			<div class="col align-middle text-start">${detail.mname}<c:if test="${detail.mid eq sessionScope.mid }">
+                			<img alt="edit" src="./img/edit.png" title="글 수정" onclick="edit(${detail.board_no})">
+                			<img alt="delete" src="./img/delete.png" title="글 삭제" onclick="deletePost(${detail.board_no})"></c:if></div>
+                			<div class="col align-middle text-end">${detail.board_date}/${detail.board_ip }</div>
                 		</div>
                 		<div class="mt-4 h-auto">${detail.board_content}</div>
                 	</div>					
@@ -138,7 +148,12 @@
 		        	<c:forEach items="${commentsList }" var="c">
 	        		<div class="my-4 shadow md-5 bg-body rounded">
 	        			<div class="bg-warning text-dark row p-2">
-	        				<div class="col-7">${c.mname }</div>
+	        				<div class="col-7">${c.mname }
+	        				<c:if test="${c.mid eq sessionScope.mid }">
+	        				<img alt="edit" src="./img/edit.png" title="댓글 수정">
+                			<img alt="delete" src="./img/delete.png" title="댓글 삭제" onclick="deleteComment(${c.no})">
+	        				</c:if>
+	        				</div>
 	        				<div class="col-2">${c.cip }</div>
 	        				<div class="col-2">${c.cdate }</div>
 	        				<div class="col-1">${c.clike }</div>

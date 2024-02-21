@@ -35,6 +35,7 @@
         <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <body id="page-top">
         <!-- Navigation-->
@@ -75,5 +76,29 @@
         <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
         <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+        
+        <!-- 파라미터로 오는 error가 있다면 에러 화면에 출력하기 -->
+        <c:if test="${param.error ne null}">
+        	<script type="text/javascript">
+        		Swal.fire("OMG", "잘못된 접근입니다.", "warning");
+        	</script>
+        </c:if>
+        <c:if test="${param.login ne null }">
+        	<script type="text/javascript">
+        		Swal.fire("로그인 할 수 없습니다.", "올바른 아이디와 비밀번호를 입력하세요.", "error");
+        	</script>
+        </c:if>
+        <c:if test="${param.count ne null }">
+        	<script type="text/javascript">
+        		let count = ${param.count};
+        		if(count < 4){
+	        		Swal.fire("로그인 정보를 확인하세요", "잘못된 로그인을 "+(count+1)+" 번 시도했습니다.", "warning");    			
+        		} else if (count == 4) {
+	        		Swal.fire("땡!", "로그인을 "+ (count+1) +" 번 실패했습니다. 계정이 잠금처리 됩니다.", "warning");    			        			
+        		} else {					
+        			Swal.fire("로그인 불가", "블락처리 된 계정입니다.", "error");
+				}
+        	</script>
+        </c:if>
     </body>
 </html>

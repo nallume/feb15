@@ -612,5 +612,11 @@
         <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
         <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+                <!-- 파라미터로 오는 error가 있다면 에러 화면에 출력하기 -->
+        <c:if test="${param.login ne null}">
+        	<script type="text/javascript">
+        		Swal.fire("Hi", "안녕", "Custom image");
+        	</script>
+        </c:if>
     </body>
 </html>

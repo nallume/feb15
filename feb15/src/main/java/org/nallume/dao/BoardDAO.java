@@ -40,12 +40,16 @@ public class BoardDAO {
 		return sqlSession.selectList("board.commentsList", no);
 	}
 
-	public int postDel(int no) {
-		return sqlSession.update("board.postDel", no);
+	public int postDel(WriteDTO dto) {
+		return sqlSession.update("board.postDel", dto);
 	}
 
 	public int totalCount() {
 		return sqlSession.selectOne("board.totalCount");
+	}
+
+	public int deleteComment(CommentDTO dto) {		
+		return sqlSession.update("board.deleteComment", dto);
 	}
 	
 }

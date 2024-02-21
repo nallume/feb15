@@ -14,5 +14,13 @@ public class LoginService {
 	public LoginDTO login(LoginDTO dto) {
 		return loginDao.login(dto);
 	}
+
+	public void mcountUp(LoginDTO dto) {
+		loginDao.mcountUp(dto);
+	}
+
+	public void mcountReset(LoginDTO loginDTO) {
+		loginDao.mcountReset(loginDTO);
+	}
 	
 }

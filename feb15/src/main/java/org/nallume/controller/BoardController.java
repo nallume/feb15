@@ -88,10 +88,8 @@ public class BoardController {
 				List<CommentDTO> commentsList = boardService.commentsList(util.str2Int2(no));
 				model.addAttribute("commentsList", commentsList);
 				//System.out.println(commentsList.get(0).getMid());
-			}
-			
-			return "detail";
-			
+			}			
+			return "detail";			
 			
 		} else {
 			//0이야 = 비정상 : 에러로 페이지 이동하기
@@ -103,37 +101,83 @@ public class BoardController {
 	//글쓰기 (24-02-16)  : 내용 + 제목 받아 -> db로 보내 -> 저장 -> 그 뒤에? 보드로 돌아가기 내가 쓴 글로 넘어가는것도 괜찮은데 동적쿼리를 써야함 - 나중에..
 	@PostMapping("/write")
 	//public String write(@Param("title") String title, @Param("content") String content) {
-	public String write(WriteDTO dto, HttpServletRequest request) {
+	public String write(WriteDTO dto) {
 		//세션추가 24-02-20
-		int result = boardService.write(dto, request);  // 1 or 0
+		int result = boardService.write(dto);  // 1 or 0
 		
 		//추가로 세션 관련 작업 더 필요함
-		if (result == 1) {
-			return "redirect:/detail?no="+dto.getBoard_no();			
+		//로그인 여부 검사 24-02-21
+		if(util.getSession().getAttribute("mid") != null) {
+			if (result == 1) {
+				return "redirect:/detail?no="+dto.getBoard_no();			
+			} else {
+				return "redirect:/error";
+			}			
 		} else {
-			return "redirect:/error";
+			return "redirect:/login?error='error'";			
 		}
 		
 	}
 	
+	//get방식 접근 막기
+	@GetMapping("/write")
+	public String write() {
+		return "redirect:/login?error='2048'";	
+	}
+	
+	
+	
 	//댓글쓰기 24-02-19 
 	@PostMapping("/commentWrite")
-	public String commentWrite(CommentDTO comment, HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		comment.setMid((String)session.getAttribute("mid"));
+	public String commentWrite(CommentDTO comment/* , HttpServletRequest request */) {
+		//HttpSession session = request.getSession();
+		//comment.setMid((String)session.getAttribute("mid"));
 		
-		int result = boardService.commentWrite(comment);
-		System.out.println("결과 : " + result);
-		return "redirect:/detail?no="+comment.getNo();
+		//로그인 여부 검사
+		if(util.getSession().getAttribute("mid") != null) {
+			int result = boardService.commentWrite(comment);
+			if(result ==1) {
+				//System.out.println("결과 : " + result);
+				return "redirect:/detail?no="+comment.getNo();				
+			}
+			return "redirect:/error";
+		}
+		return "redirect:/login";
+
 	}
 	
 	//글삭제
 	@PostMapping("/postDel")
 	public String postDel(@RequestParam("no") int no) {
 		//System.out.println("no : " + no);
-		int result = boardService.postDel(no);
-		System.out.println("result :" + result);
-		return "redirect:/board";
+		
+		//24-02-21 로그인 여부 검사
+		if(util.getSession().getAttribute("mid") != null) {
+			//로그인 했을 때
+			int result = boardService.postDel(no);
+			if(result == 1) {
+				return "redirect:/board";				
+			}
+			return "redirect:/index";
+			
+		} else {
+			return "redirect:/login";			
+		}
+	}
+	
+	//댓삭 - 댓글 번호 + 작성자 mid + 글번호
+	@GetMapping("/deleteComment")
+	public String deleteComment(@RequestParam("no") int no, @RequestParam("cno") int cno) {
+		//System.out.println("no : "+no);		
+		int result = boardService.deleteComment(no, cno);
+		if(util.getSession().getAttribute("mid") != null) {
+			if(result == 1) {
+				//return "redirect:/board";				
+				return "redirect:/detail?no="+no;
+			}
+			return "redirect:/error";								
+		}
+		return "redirect:/login";
 	}
 	
 }

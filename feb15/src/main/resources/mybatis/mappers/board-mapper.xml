@@ -23,31 +23,30 @@
 	</select>
 	
 	<select id="detail" parameterType="int" resultType="Map">
-		SELECT b.board_no, b.board_title, b.board_content, m.mname, b.board_date, b.board_ip, b.board_del, 
+		SELECT b.board_no, b.board_title, b.board_content, m.mname, m.mid, b.board_date, b.board_ip, b.board_del, 
 		(SELECT COUNT(*) FROM comment WHERE board_no=b.board_no) AS comment 
 		FROM board b JOIN member m ON b.mno=m.mno 
 		WHERE board_no=#{no} 
 	</select>
 
 	<select id="detail2" parameterType="Integer" resultType="boardDTO">
-		SELECT board_no, board_title, board_content,  
-		(SELECT mname FROM member WHERE mno = board.mno) AS mname, board_date, board_ip, board_del, 
-		(SELECT COUNT(*) FROM comment WHERE board_no=board.board_no) AS comment 
-		FROM board 
+		SELECT b.board_no, b.board_title, b.board_content, m.mname, m.mid, b.board_date, b.board_ip, b.board_del, 
+		(SELECT COUNT(*) FROM comment WHERE board_no=b.board_no) AS comment 
+		FROM board b JOIN member m ON b.mno=m.mno 
 		WHERE board_no=#{no} AND board_del='1' 
 	</select>
 	
 	<insert id="write" parameterType="writeDTO">
-		INSERT INTO board (board_title, board_content, mno) 
-		VALUES (#{title}, #{content}, (SELECT mno FROM member WHERE mid=#{mid})) 
+		INSERT INTO board (board_title, board_content, mno, board_ip) 
+		VALUES (#{title}, #{content}, (SELECT mno FROM member WHERE mid=#{mid}), #{ip}) 
 		<selectKey resultType="Integer" keyProperty="board_no" order="AFTER">
 			SELECT LAST_INSERT_ID()
 		</selectKey>
 	</insert>
 	
 	<insert id="commentWrite" parameterType="commentDTO">
-		INSERT INTO comment (board_no, ccomment, mno) 
-		VALUES (#{no}, #{comment}, (SELECT mno FROM member WHERE mid=#{mid}))
+		INSERT INTO comment (board_no, ccomment, mno, cip) 
+		VALUES (#{no}, #{comment}, (SELECT mno FROM member WHERE mid=#{mid}), #{cip})
 	</insert>
 	
 	<select id="commentsList" parameterType="Integer" resultMap="commentDTOmap">
@@ -56,13 +55,22 @@
 		WHERE board_no=#{no}
 	</select>
 	
-	<update id="postDel" parameterType="Integer">
+	<update id="postDel" parameterType="writeDTO">
 		<![CDATA[
-		UPDATE board SET board_del='0' WHERE board_no=#{no}
+		UPDATE board SET board_del='0' 
+		WHERE board_no=#{board_no} AND mno=(SELECT mno FROM member WHERE mid=#{mid})
 		]]>
 	</update>
 	
 	<select id="totalCount" resultType="Integer">
 		SELECT COUNT(*) FROM boardview
 	</select>
+	
+	<update id="deleteComment" parameterType="commentDTO">
+		<![CDATA[
+		UPDATE comment SET cdel='0' 
+		WHERE cno=#{no} AND board_no=#{board_no} AND mno=(SELECT mno FROM member WHERE mid=#{mid})
+		]]>
+	</update>
+	
 </mapper>

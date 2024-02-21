@@ -10,6 +10,7 @@ import org.nallume.dao.BoardDAO;
 import org.nallume.dto.BoardDTO;
 import org.nallume.dto.CommentDTO;
 import org.nallume.dto.WriteDTO;
+import org.nallume.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,9 @@ public class BoardService {
 
 	@Autowired
 	private BoardDAO boardDAO;
+	
+	@Autowired
+	private Util util;
 	
 	public List<BoardDTO> boardList(int PageNo){		
 		return boardDAO.boardList(PageNo);
@@ -31,14 +35,21 @@ public class BoardService {
 		return boardDAO.detail2(no);
 	}
 
-	public int write(WriteDTO dto, HttpServletRequest request) {
-		HttpSession session = request.getSession();
+	public int write(WriteDTO dto) {
+		//HttpServletRequest request = util.req();
+		HttpSession session = util.getSession();
 		dto.setMid((String)session.getAttribute("mid"));
+		//dto.setMid((String)util.getSession().getAttribute("mid")); 한줄 버전
+		dto.setIp(util.getIP());
+		//줄바꿈 적용
+		dto.setContent(dto.getContent().replaceAll("(\\r\\n|\\r|\\n|\\n\\r)", "<br>"));
 		return boardDAO.write(dto);
 	}
 
 	public int commentWrite(CommentDTO comment) {
-		//comment.setMid("newbe");
+		// 댓글 내용 + 글번호에 mid 추가
+		comment.setMid((String) util.getSession().getAttribute("mid"));
+		comment.setCip(util.getIP());
 		return boardDAO.commentWrite(comment);
 	}
 
@@ -46,12 +57,23 @@ public class BoardService {
 		return boardDAO.commentsList(no);
 	}
 
-	public int postDel(int no) {
-		return boardDAO.postDel(no);
+	public int postDel(int no) { //글번호 + mid = 자신의 글만 삭제하게 하기 위해서
+		WriteDTO dto = new WriteDTO();
+		dto.setBoard_no(no);
+		dto.setMid((String) util.getSession().getAttribute("mid"));
+		return boardDAO.postDel(dto);
 	}
 
 	public int totalCount() {
 		return boardDAO.totalCount();
+	}
+
+	public int deleteComment(int no, int cno) {
+		CommentDTO dto = new CommentDTO();
+		dto.setBoard_no(no);
+		dto.setNo(cno);
+		dto.setMid((String) util.getSession().getAttribute("mid"));
+		return boardDAO.deleteComment(dto);
 	}
 
 	

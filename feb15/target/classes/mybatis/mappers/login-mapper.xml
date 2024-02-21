@@ -7,10 +7,20 @@
 
 	<select id="login" parameterType="loginDTO" resultType="loginDTO">
 		<![CDATA[
-		SELECT COUNT(*) as count, mname 
+		SELECT COUNT(*) as count, mname, mcount, mpw as pw 
 		FROM member 
-		WHERE mid=#{id} AND  mpw=#{pw} AND mgrade > 4
+		WHERE mid=#{id} AND mgrade > 4
 		]]>
 	</select>
+	
+	<update id="mcountUp" parameterType="loginDTO">
+		UPDATE member SET mcount = mcount+1 
+		WHERE mid=#{id}
+	</update>
+	
+	<update id="mcountReset" parameterType="loginDTO">
+		UPDATE member SET mcount = 0 
+		WHERE mid=#{id}
+	</update>
 
 </mapper>

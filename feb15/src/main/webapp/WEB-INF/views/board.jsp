@@ -39,7 +39,14 @@
         <link href="css/board.css" rel="stylesheet" />
         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script type="text/javascript">
+       	<!-- 썬에디터 -->
+       	<link href="https://cdn.jsdelivr.net/npm/suneditor@latest/dist/css/suneditor.min.css" rel="stylesheet">
+		<!-- <link href="https://cdn.jsdelivr.net/npm/suneditor@latest/assets/css/suneditor.css" rel="stylesheet"> -->
+		<!-- <link href="https://cdn.jsdelivr.net/npm/suneditor@latest/assets/css/suneditor-contents.css" rel="stylesheet"> -->
+		<script src="https://cdn.jsdelivr.net/npm/suneditor@latest/dist/suneditor.min.js"></script>
+		<!-- languages (Basic Language: English/en) -->
+		<script src="https://cdn.jsdelivr.net/npm/suneditor@latest/src/lang/ko.js"></script>
+    	<script type="text/javascript">
     	function writeCheck(){
     		//alert("글쓰기 버튼을 눌렀습니다");
     		let title = document.querySelector("#title");
@@ -138,7 +145,9 @@
 						<ui:pagination paginationInfo = "${paginationInfo}" type="image" jsFunction="linkPage"/>
 					</div>
 					<!-- 글쓰기 -->
-					<button type="button" class="btn btn-info" style="width: 100px" data-bs-toggle="modal" data-bs-target="#write">글쓰기</button>
+					<c:if test="${sessionScope.mid ne null }">
+						<button type="button" class="btn btn-info" style="width: 100px" data-bs-toggle="modal" data-bs-target="#write">글쓰기</button>
+					</c:if>
                 </div>
             </div>
         </section> 
@@ -193,5 +202,14 @@
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+        <script type="text/javascript">
+        const editor = SUNEDITOR.create((document.getElementById('content') || 'content'),{
+            // All of the plugins are loaded in the "window.SUNEDITOR" object in dist/suneditor.min.js file
+            // Insert options
+            // Language global object (default: en)
+           	height: 300,
+            lang: SUNEDITOR_LANG['ko']
+        });
+        </script>
     </body>
 </html>
