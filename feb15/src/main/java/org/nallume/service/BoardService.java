@@ -32,8 +32,21 @@ public class BoardService {
 	}
 
 	public BoardDTO detail2(int no) {
+		//24-02-21 로그인 여부 검사 => 읽음 수 올리기
+		if(util.getSession().getAttribute("mid") != null ) {
+			//DTO 객체 만들기 = 번호 + 아이디
+			BoardDTO dto = new BoardDTO();
+			dto.setBoard_no(no);
+			dto.setMid((String) util.getSession().getAttribute("mid"));
+			//int result = boardDAO.readCheck(dto);
+			//if(result == 0) { //읽은 적 있는지 묻기
+				boardDAO.countUp(dto);				
+			//}
+		}		
 		return boardDAO.detail2(no);
 	}
+	
+	
 
 	public int write(WriteDTO dto) {
 		//HttpServletRequest request = util.req();
@@ -75,6 +88,11 @@ public class BoardService {
 		dto.setMid((String) util.getSession().getAttribute("mid"));
 		return boardDAO.deleteComment(dto);
 	}
+
+	public int likeUp(CommentDTO dto) {
+		return boardDAO.likeUp(dto);
+	}
+
 
 	
 }

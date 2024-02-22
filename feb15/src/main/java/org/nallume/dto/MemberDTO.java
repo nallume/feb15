@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class MemberDTO {
 	private int mno, mgrade;
-	private String mid, mpw, mname, mdate;
+	private String mid, mpw, mname, mdate, memail, mkey;
 }

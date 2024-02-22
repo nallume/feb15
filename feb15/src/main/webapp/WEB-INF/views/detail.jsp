@@ -102,6 +102,12 @@
         	//ajax로 화면전환없이 고 부분만 없애주기(예전에 했엇음)
         }
         
+        //조아요
+        function like(no){
+        	Swal.fire("좋아요를 누릅니다", "", "success");
+        	location.href="./likeUp?no=${detail.board_no}&cno="+no;
+        }
+        
         
         </script>
     </head>
@@ -156,7 +162,9 @@
 	        				</div>
 	        				<div class="col-2">${c.cip }</div>
 	        				<div class="col-2">${c.cdate }</div>
-	        				<div class="col-1">${c.clike }</div>
+	        				<div class="col-1">
+	        				<img alt="like" src="./img/like.png" onclick="like(${c.no})">
+	        				${c.clike }</div>
 	        			</div>
 	        			<div class="mx-5 mt-1" style="min-height:80px">${c.comment }</div>
 	        		</div>

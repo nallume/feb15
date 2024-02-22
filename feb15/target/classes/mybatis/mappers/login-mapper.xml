@@ -23,4 +23,13 @@
 		WHERE mid=#{id}
 	</update>
 
+	<select id="getEmail" parameterType="String" resultType="String">
+		SELECT memail FROM member WHERE mid=#{id}
+	</select>
+	
+	<update id="setKey" parameterType="memberDTO">
+		UPDATE member SET mkey=#{mkey} 
+		WHERE mid=#{mid} 
+	</update>
+
 </mapper>

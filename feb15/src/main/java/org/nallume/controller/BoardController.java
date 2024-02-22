@@ -4,9 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
-import org.apache.ibatis.annotations.Param;
 import org.nallume.dto.BoardDTO;
 import org.nallume.dto.CommentDTO;
 import org.nallume.dto.WriteDTO;
@@ -179,5 +177,29 @@ public class BoardController {
 		}
 		return "redirect:/login";
 	}
+	
+	//24-02-21 요구사항 확인
+	@GetMapping("/likeUp")
+	public String likeUp(@RequestParam("no") String no, @RequestParam("cno") String cno) {
+		//no, cno 숫자인지 검사
+		if(util.intCheck(no) && util.intCheck(cno)) {
+			CommentDTO dto = new CommentDTO();
+			dto.setBoard_no(util.str2Int2(no));
+			dto.setNo(util.str2Int2(cno));
+			dto.setMid((String) util.getSession().getAttribute("mid"));
+			int result = boardService.likeUp(dto);
+			return "redirect:/detail?no="+no;
+		} else {
+			return "redirect:/error";			
+		}
+		
+		
+	}
+	
+	
+	
+	
+	
+	
 	
 }

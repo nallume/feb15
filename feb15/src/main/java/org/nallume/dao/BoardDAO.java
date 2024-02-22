@@ -51,5 +51,17 @@ public class BoardDAO {
 	public int deleteComment(CommentDTO dto) {		
 		return sqlSession.update("board.deleteComment", dto);
 	}
+
+	public void countUp(BoardDTO dto) {
+		sqlSession.insert("board.countUP", dto);
+	}
+
+	public int likeUp(CommentDTO dto) {
+		return sqlSession.insert("board.likeUp", dto);
+	}
+
+/*	public int readCheck(BoardDTO dto) {
+		return sqlSession.selectOne("board.readCheck", dto);
+	}*/
 	
 }

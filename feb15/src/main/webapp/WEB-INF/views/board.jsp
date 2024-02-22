@@ -39,13 +39,12 @@
         <link href="css/board.css" rel="stylesheet" />
         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-       	<!-- 썬에디터 -->
-       	<link href="https://cdn.jsdelivr.net/npm/suneditor@latest/dist/css/suneditor.min.css" rel="stylesheet">
-		<!-- <link href="https://cdn.jsdelivr.net/npm/suneditor@latest/assets/css/suneditor.css" rel="stylesheet"> -->
-		<!-- <link href="https://cdn.jsdelivr.net/npm/suneditor@latest/assets/css/suneditor-contents.css" rel="stylesheet"> -->
-		<script src="https://cdn.jsdelivr.net/npm/suneditor@latest/dist/suneditor.min.js"></script>
-		<!-- languages (Basic Language: English/en) -->
-		<script src="https://cdn.jsdelivr.net/npm/suneditor@latest/src/lang/ko.js"></script>
+		<!-- summer note -->
+		<script src="/js/summernote/summernote-lite.js"></script>
+		<script src="/js/summernote/lang/summernote-ko-KR.js"></script>
+		<script src="/js/summernote/summernote-bs4.min.js"></script>
+		<link href="/css/summernote/summernote-lite.css" rel="stylesheet">
+		<link href="/css/summernote/summernote-bs4.min.css" rel="stylesheet">
     	<script type="text/javascript">
     	function writeCheck(){
     		//alert("글쓰기 버튼을 눌렀습니다");
@@ -164,7 +163,7 @@
         				<div class="mt-2">
 	        				<form action="./write" method="post" onsubmit="return writeCheck()" name="frm">
 	        					<input type="text" name="title" class="form-control mb-2" id="title" required="required" placeholder="제목을 입력하세요.">
-	        					<textarea name="content" class="form-control mb-2 vh-500" id="content" required="required"></textarea>
+	        					<textarea name="content" class="form-control mb-2 vh-500" id="summernote" required="required"></textarea>
 	        					<button type="submit" class="btn btn-info">글쓰기</button>
 	        				</form>
         				</div>
@@ -203,13 +202,23 @@
         <script src="js/scripts.js"></script>
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
         <script type="text/javascript">
-        const editor = SUNEDITOR.create((document.getElementById('content') || 'content'),{
-            // All of the plugins are loaded in the "window.SUNEDITOR" object in dist/suneditor.min.js file
-            // Insert options
-            // Language global object (default: en)
-           	height: 300,
-            lang: SUNEDITOR_LANG['ko']
-        });
+        $(function(){
+    		$('#summernote').summernote({
+    			lang: 'ko-KR', // default: 'en-US'
+    			height: 600,
+    			fontNames : ['D2Coding', 'Arial Black', 'Comic Sans MS', 'Courier New'],
+    			toolbar: [
+    			    // [groupName, [list of button]]
+    			    ['style', ['bold', 'italic', 'underline', 'clear']],
+    			    /* ['font', ['strikethrough', 'superscript', 'subscript']], */
+    			    ['fontname', ['fontname','fontsize', 'color']],
+    			    ['para', ['ul', 'ol', 'paragraph']],
+    			    /* ['height', ['height']] */
+    			    ['table', ['table','link', 'picture', 'video']],
+    			    ['view', ['fullscreen', 'codeview', 'help']]
+    			  ]
+    		});
+    	});
         </script>
     </body>
 </html>

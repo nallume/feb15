@@ -22,5 +22,6 @@ public class LoginService {
 	public void mcountReset(LoginDTO loginDTO) {
 		loginDao.mcountReset(loginDTO);
 	}
+
 	
 }
