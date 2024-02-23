@@ -8,5 +8,6 @@
 		<typeAlias type="org.nallume.dto.WriteDTO" alias="writeDTO" />
 		<typeAlias type="org.nallume.dto.CommentDTO" alias="commentDTO" />
 		<typeAlias type="org.nallume.dto.LoginDTO" alias="loginDTO" />
+		<typeAlias type="org.nallume.dto.GalleryDTO" alias="galleryDTO" />
 	</typeAliases>	
 </configuration>

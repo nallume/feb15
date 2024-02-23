@@ -38,8 +38,14 @@
 	</repositories>
 
 	<dependencies>
+		<!-- 썸네일 -->
+		<dependency>
+    		<groupId>net.coobird</groupId>
+    		<artifactId>thumbnailator</artifactId>
+   		 	<version>0.4.20</version>
+		</dependency>		
 
-		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-email -->
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-email / 아파치에서 제공한 메일보내기 -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-email</artifactId>
