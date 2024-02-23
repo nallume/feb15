@@ -37,8 +37,8 @@ public class MailService {
 
 	public void sendHTMLMail(String email, String title, String content) throws EmailException {
 		//접속정보 동일
-		String emailAddr = "nallume@outlook.kr"; // 보내는 사람 = outlook
-		String pw = "zkaekdns#"; //보내는 사람 pw = outlook
+		String emailAddr = ""; // 보내는 사람 = outlook
+		String pw = ""; //보내는 사람 pw = outlook
 		String name = "yujin"; //보내는 사람 이름
 		String host = "smtp-mail.outlook.com"; //아웃룩 호스트
 		int port = 587; //아웃룩 포트
