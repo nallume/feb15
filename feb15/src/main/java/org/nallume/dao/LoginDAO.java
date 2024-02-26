@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class LoginDAO {
-	@Autowired
-	SqlSession sqlSession;
+public class LoginDAO extends AbstractDAO {
 	
 	public LoginDTO login(LoginDTO dto) {
 		return sqlSession.selectOne("login.login", dto);

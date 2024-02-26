@@ -11,7 +11,26 @@
 	</insert>
 	
 	<select id="galleryList" resultType="galleryDTO">
-		SELECT * FROM gallery
+		SELECT gno, gtitle, gfile, glike, gcontent, 
+		if(DATE_FORMAT(gdate,'%Y-%m-%d')=date_format(NOW(),'%Y-%m-%d'), 
+		DATE_FORMAT(gdate,'%h-%i'), 
+		DATE_FORMAT(gdate,'%m-%d')) AS gdate 
+		FROM gallery 
+		WHERE gdel=1 
+		ORDER BY gno DESC 
 	</select>
+
+	<select id="galleryDetail" parameterType="Integer" resultType="galleryDTO">
+		SELECT gno, gtitle, gfile, glike, gcontent, 
+		DATE_FORMAT(gdate,'%Y년 %m월 %d일 %h시 %i분 %s초') AS gdate, 
+		(SELECT mname FROM member WHERE member.mno = gallery.mno) AS mname, 
+		(SELECT mid FROM member WHERE member.mno = gallery.mno) AS mid 
+		FROM gallery 
+		WHERE gno=#{no}
+	</select>
+	
+	<update id="galleryDel" parameterType="Integer">
+		UPDATE gallery SET gdel='0' WHERE gno=#{gno}
+	</update>
 
 </mapper>

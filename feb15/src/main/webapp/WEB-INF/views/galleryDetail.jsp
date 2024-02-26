@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>갤러리 글쓰기</title>
+        <title>게시판</title>
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <link rel="shortcut icon" type="image/x-icon" href="assets/favicon.ico" />
@@ -35,82 +35,72 @@
         <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
+        <link href="css/board.css" rel="stylesheet" />
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script type="text/javascript">
-        const Toast = Swal.mixin({
-        	toast: true,
-        	position: 'center-center',
-        	showConfirmButton: false,
-        	timer: 3000,
-        	timerProgressBar: true,
-        	didOpen:(toast) => {
-        		toast.onmouseenter = Swal.stopTimer;
-        		toast.onmouseleave = Swal.resumeTimer;
-        	}     	
-        });       
-        
-        function galleryDetail(no){
-        	
-//        	location.href="./galleryDetail?no="+no;
-        	location.href="./galleryDetail@"+no;
+        function deletePost(){
+        	Swal.fire({
+        		title: "글 지우기?",
+        	    text: "post를 삭제합니다.",
+        	    icon: "warning",
+        	    showCancelButton: true,
+        	    confirmButtonColor: "#3085d6",
+        	    cancelButtonColor: "#d33",
+        	    confirmButtonText: "지우기"
+        	    }).then((result) => { //화살표 문법
+        	    	if (result.isConfirmed) {
+        	    		//java에 삭제하라고 명령 내리는 코드
+        	    		//가상 form 선언
+        	    		let vform = $("<form></form>");
+        	    		//속성지정
+        	    		vform.attr("name", "vform"); // name은 필수 아닌 옵션
+        	    		vform.attr('method', 'post');
+        	    		vform.attr('action', './galleryDel');
+        	    		//
+        	    		vform.append($('<input/>', {type:'hidden', name:'no', value:${detail.gno } }));
+        	    		vform.appendTo('body');
+        	    		vform.submit();
+        	    		
+        	    		//let vform = $("<form name=''></form>");        	    		
+        	    		//Swal.fire({"Deleted!", "Your file has been deleted.", "success"});
+        	    		}
+        	    	});
+        	}
+        //조아요
+        function like(no){
+        	Swal.fire("좋아요를 누릅니다", "", "success");
+        	location.href="./galleryLike?no="+no;
         }
-        
         </script>
-        <style type="text/css">
-        .img-wrapper {
-        	position: relative;
-			width: 119px;
-			height: 120px;
-		}
-        .img-wrapper img {
- 	        position: absolute;
-			top:0;
-			left: 0;
-			transform: translate(50,50);
-			width: 100%;
-    		height: 100%;
-    		object-fit: cover;
-    		margin: auto;
-		}
-		.card-img-overlay{
-			text-align: center;
-			line-height: 100px;
-		}
-        </style>
     </head>
     <body id="page-top">
         <!-- Navigation-->
-        <%@ include file="menu.jsp" %>
+       	<%@ include file="menu.jsp" %>
         
-        <!-- 갤러리 -->
-        <section class="page-section" id="gallery">
-            <div class="d-flex justify-content-center">
-            	<div class="row align-items-start" style="padding: 0; width: 600px;">
-       				<c:forEach items="${list }" var="row">
-       				<div class="col-sm-3 mb-2">
-            		<div class="card text-white mr-5" style="width: 120px; height: 140px;">
-            			<div class="img-wrapper">
-        	    		<img alt="thumbnail" src="./upfile/s_${row.gfile }" class="card-img-top" >
-            			</div>
-        	    		<div class="card-img-overlay" onclick="galleryDetail(${row.gno})">
-    	        			${row.gtitle }
-        	    		</div>
-        	    		<div class="card-body d-flex justify-content-between text-black align-items-center">
-        	    			<div class="flex-grow-1">
-            				${row.glike }
-        	    			</div>
-        	    			<div class="flex-grow-1 text-right">
-            				${row.gdate }
-        	    			</div>
-        	    		</div>
-       				</div>
-            		</div>
-          			</c:forEach>
-            		<c:if test="${sessionScope.mid ne null }">
-	            		<button type="button" onclick="location.href='/galleryInsert'" class="btn btn-outline-dark">업로드</button>           		
-            		</c:if>
-            	</div>
+        <!-- 톺아보기 -->
+        <section class="page-section" id="services">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="section-heading text-uppercase">갤러리 톺아보기</h2>
+                </div>
+                <div class="card mb-4" style="min-height: 500px">
+                	<div class="card-body">
+                		<div class="h3">${detail.gtitle}
+                		<span><img alt="like" src="./img/like.png" onclick="like(${detail.gno})">${detail.glike }</span>
+                		</div>
+                		<div class="row p-2 bg-secondary">
+                			<div class="col align-middle text-start">${detail.mname}<c:if test="${detail.mid eq sessionScope.mid }">
+                			<img alt="edit" src="./img/edit.png" title="글 수정" onclick="edit(${detail.gno})">
+                			<img alt="delete" src="./img/delete.png" title="글 삭제" onclick="deletePost(${detail.gno})"></c:if></div>
+                			<div class="col align-middle text-end">${detail.gdate}</div>
+                		</div>
+                		<div class="mt-4 h-auto">
+                		<img alt="image" class="img-fluid" src="./upfile/${detail.gfile }"><br>
+                		${detail.gcontent}</div>
+                	</div>					
+                </div>
+	        	<button class="btn btn-warning" onclick="history.back()">게시판으로</button>
             </div>
         </section>
         
@@ -118,11 +108,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
-        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
-        <!-- * *                               SB Forms JS                               * *-->
-        <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
-        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
-        
     </body>
 </html>

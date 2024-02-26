@@ -3,18 +3,13 @@ package org.nallume.dao;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.session.SqlSession;
 import org.nallume.dto.BoardDTO;
 import org.nallume.dto.CommentDTO;
 import org.nallume.dto.WriteDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class BoardDAO {
-	
-	@Autowired
-	private SqlSession sqlSession;
+public class BoardDAO extends AbstractDAO{
 	
 	public List<BoardDTO> boardList(int pageNo){
 		return sqlSession.selectList("board.boardList", pageNo);
