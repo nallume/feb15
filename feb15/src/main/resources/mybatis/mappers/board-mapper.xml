@@ -104,4 +104,10 @@
 		VALUES (#{board_no}, #{no}, (SELECT mno FROM member WHERE mid=#{mid}) )
 	</insert>
 	
+	<update id="update" parameterType="boardDTO">
+		UPDATE board 
+		SET board_title=#{board_title}, board_content=#{board_content} 
+		WHERE board_no=#{board_no}
+	</update>
+	
 </mapper>

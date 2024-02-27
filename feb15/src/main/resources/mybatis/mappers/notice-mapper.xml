@@ -5,15 +5,38 @@
 
 <mapper namespace="notice">
 
-	<select id="noticeList" resultType="noticeDTO">
-		SELECT * 
-		FROM notice
+	<select id="noticeList" parameterType="Integer" resultType="noticeDTO">
+		SELECT nno, ntitle, nread, nlike, 
+		Date_format(ndate,'%Y-%m-%d %h:%i') AS ndate 
+		FROM notice 
+		WHERE ndel=1 
+		ORDER BY nno DESC LIMIT #{pageNo}, 10 
 	</select>
 	
 	<select id="detail" parameterType="Integer" resultType="noticeDTO">
 		SELECT nno, ntitle, ncontent, ndate, ndel, nread, nlike 
 		FROM notice 
 		WHERE nno=#{nno} AND ndel=1 
+	</select>
+	
+	<insert id="noticeWrite" parameterType="noticeDTO">
+		INSERT INTO notice (ntitle, ncontent) 
+		VALUES (#{ntitle}, #{ncontent})
+	</insert>
+	
+	<update id="noticeDel" parameterType="Integer">
+		UPDATE notice SET ndel=0
+		WHERE nno=#{no}
+	</update>
+	
+	<update id="noticeUpdate" parameterType="noticeDTO">
+		UPDATE notice 
+		SET ntitle=#{ntitle}, ncontent=#{ncontent} 
+		WHERE nno=#{nno}
+	</update>
+	
+	<select id="totalCount" resultType="Integer">
+		SELECT COUNT(*) FROM notice WHERE ndel=1
 	</select>
 	
 </mapper>

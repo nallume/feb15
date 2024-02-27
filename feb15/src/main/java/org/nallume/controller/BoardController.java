@@ -196,7 +196,15 @@ public class BoardController {
 		
 	}
 	
-	
+	//글 수정
+	@PostMapping("/detailUpdate")
+	public String detailUpdate(BoardDTO dto) {
+		int result = boardService.detailUpdate(dto);
+		if(result == 1) {
+			return "redirect:/detail?no=" + dto.getBoard_no();			
+		}
+		return "redirect:/error";
+	}
 	
 	
 	

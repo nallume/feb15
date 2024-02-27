@@ -90,6 +90,10 @@ public class BoardService extends AbstractService {
 		return boardDAO.likeUp(dto);
 	}
 
+	public int detailUpdate(BoardDTO dto) {
+		return boardDAO.detailUpdate(dto);
+	}
+
 
 	
 }

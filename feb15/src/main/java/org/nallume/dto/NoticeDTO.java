@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class NoticeDTO {
 	private int nno, ndel, nread, nlike;
-	private String ntitle, ncontent, ndate;
+	private String ntitle, ncontent, ndate, mid, mname;
 }

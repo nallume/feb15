@@ -39,7 +39,7 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script type="text/javascript">
-        function deletePost(){
+        function deleteNotice(){
         	Swal.fire({
         		title: "글 지우기?",
         	    text: "post를 삭제합니다.",
@@ -56,9 +56,9 @@
         	    		//속성지정
         	    		vform.attr("name", "vform"); // name은 필수 아닌 옵션
         	    		vform.attr('method', 'post');
-        	    		vform.attr('action', './postDel');
+        	    		vform.attr('action', './noticeDel');
         	    		//
-        	    		vform.append($('<input/>', {type:'hidden', name:'no', value:${detail.board_no } }));
+        	    		vform.append($('<input/>', {type:'hidden', name:'no', value:${detail.nno } }));
         	    		vform.appendTo('body');
         	    		vform.submit();
         	    		
@@ -67,54 +67,13 @@
         	    		}
         	    	});
         	}
-
-        function edit(no){
+        
+        function editNotice(no){
         	//모달 보이기
-    		let detailModal = new bootstrap.Modal('#edit', {});  // {옵션}  		
+    		let detailModal = new bootstrap.Modal('#nedit', {});  // {옵션}  		
     		detailModal.show(); //함수 실행되면 detailModal이 나타나게
-        }        
-        
-        //제이쿼리
-        $(function(){
-        	//댓글 글자수 확인하는 코드
-        	$("#comment").keyup(function(){
-        		let text = $(this).val();
-     			$("#comment-input").text("댓글쓰기 " + text.length + "/500");
-        		if(text.length > 500){
-        			//alert("댓글은 500자를 초과할 수 없습니다");
-        			Swal.fire("말이 너무 많습니다", "댓글은 500자까지만 가능합니다.", "warning");
-        			$(this).val(text.substr(0,500));
-        		}
-        	});
-        });
-        
-        //댓글 공백 금지
-        function commentCheck(){
-        	let commentText = document.querySelector("#comment");
-        	let comment = commentText.value.replaceAll(" ", "");
-        	if(comment.length < 1){
-        		alert("내용을 입력하세욥.");
-        		commentText.focus();
-        		return false;
-        	}
-        }
-        
-        //댓글 지우기
-        function deleteComment(no){
-        	//Swal.fire("정말?", no + "번 글을 삭제합니다.", "warning");
-        	if(confirm("댓삭?")){
-	        	location.href="./deleteComment?no=${detail.board_no}&cno="+no; // 글번호 + 댓글번호 그냥 get으로 보냈다. 나중에 post로 보내주면 좋겠지        		
-        	}
-        	//ajax로 화면전환없이 고 부분만 없애주기(예전에 했엇음)
-        }
-        
-        //조아요
-        function like(no){
-        	Swal.fire("좋아요를 누릅니다", "", "success");
-        	location.href="./likeUp?no=${detail.board_no}&cno="+no;
-        }
-        
-        
+        }                
+              
         </script>
     </head>
     <body id="page-top">
@@ -129,70 +88,39 @@
                 </div>
                 <div class="card mb-4" style="min-height: 500px">
                 	<div class="card-body">
-                		<div class="h3">${detail.board_title}
-                		</div>
+                		<div class="h3" id="nitle">${detail.ntitle}</div>
                 		<div class="row p-2 bg-secondary">
-                			<div class="col align-middle text-start">${detail.mname}<c:if test="${detail.mid eq sessionScope.mid }">
-                			<img alt="edit" src="./img/edit.png" title="글 수정" onclick="edit(${detail.board_no})">
-                			<img alt="delete" src="./img/delete.png" title="글 삭제" onclick="deletePost(${detail.board_no})"></c:if></div>
-                			<div class="col align-middle text-end">${detail.board_date}/${detail.board_ip }</div>
+                			<div class="col align-middle text-start">
+                			관리자
+<%--                		<a class="btn btn-success" href="./noticeDel@${detail.nno }">삭제</a>
+                			<button class="btn btn-success" onclick="location.href='./noticeUpdate?no=${detail.nno}'">수정</button> --%>             		
+                			<img alt="edit" src="./img/edit.png" title="글 수정" onclick="editNotice(${detail.nno})">
+                			<img alt="delete" src="./img/delete.png" title="글 삭제" onclick="deleteNotice(${detail.nno})">
+                			</div>
+                			<div class="col align-middle text-end">${detail.ndate}</div>
                 		</div>
-                		<div class="mt-4 h-auto">${detail.board_content}</div>
+                		<div class="mt-4 h-auto" id="ncontent">${detail.ncontent}</div>
                 	</div>					
                 </div>
-	        	<button class="btn btn-warning" onclick="history.back()">게시판으로</button>
-	        
-	        	<hr>
-	        	<!-- 댓글쓰기창  / 24-02-20 스크립트로 빈칸 검사하기 -->
-	        	<div class="">
-	        		<form action="./commentWrite" method="post" onsubmit="return commentCheck()">
-	     	   		<div class="row">
-	        			<div class="input-group mb-3">
-		        			<textarea class="form-control" name="comment" id="comment" aria-describedby="comment-input"></textarea>
-		        			<button class="btn btn-secondary" type="submit" id="comment-input">댓글쓰기 0/500</button>
-	        			</div>
-	        		</div>
-	        		<input type="hidden" name="no" value="${detail.board_no }">
-	        		</form>
-	        	</div>
-	        	<!-- 댓글출력창 -->
-	        	<div class="mt-2">
-		        	<c:forEach items="${commentsList }" var="c">
-	        		<div class="my-4 shadow md-5 bg-body rounded">
-	        			<div class="bg-warning text-dark row p-2">
-	        				<div class="col-7">${c.mname }
-	        				<c:if test="${c.mid eq sessionScope.mid }">
-	        				<img alt="edit" src="./img/edit.png" title="댓글 수정">
-                			<img alt="delete" src="./img/delete.png" title="댓글 삭제" onclick="deleteComment(${c.no})">
-	        				</c:if>
-	        				</div>
-	        				<div class="col-2">${c.cip }</div>
-	        				<div class="col-2">${c.cdate }</div>
-	        				<div class="col-1">
-	        				<img alt="like" src="./img/like.png" onclick="like(${c.no})">
-	        				${c.clike }</div>
-	        			</div>
-	        			<div class="mx-5 mt-1" style="min-height:80px">${c.comment }</div>
-	        		</div>
-		        	</c:forEach>
-	        	</div>
+                <hr>
+	        	<button class="btn btn-warning" onclick="history.back()">글목록</button>
             </div>            
         </section>
-        <!-- 글 수정 모달 -->
-        <div class="modal" id="edit">
+       <!-- 공지 수정 모달 -->
+        <div class="modal" id="nedit">
         	<div class="modal-dialog modal-xl">
         		<div class="modal-content">
         			<div class="modal-header">
-        				<h4 class="modal-title">글 수정</h4>
+        				<h4 class="modal-title">공지 수정</h4>
         				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         			</div>
         			<div class="modal-body">
         				<div class="mt-2">
-	        				<form action="./detailUpdate" method="post" name="frm">
-	        					<input type="hidden" name="board_no" value="${detail.board_no }">
-	        					<input type="text" name="board_title" class="form-control mb-2" id="title" required="required" value="${detail.board_title}">
-	        					<textarea name="board_content" class="form-control mb-2 vh-500" id="summernote" required="required">${detail.board_content}</textarea>
-	        					<button type="submit" class="btn btn-info">수정하기</button>
+	        				<form action="./noticeUpdate" method="post" name="frm">
+	        					<input type="hidden" name="nno" value="${detail.nno }">
+	        					<input type="text" name="ntitle" class="form-control mb-2" id="title" required="required" value="${detail.ntitle}">
+	        					<textarea name="ncontent" class="form-control mb-2 vh-500" id="summernote" required="required">${detail.ncontent}</textarea>
+	        					<button type="submit" class="btn btn-info">글쓰기</button>
 	        				</form>
         				</div>
         			</div>

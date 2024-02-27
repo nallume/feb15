@@ -13,32 +13,33 @@ public class NoticeServiceImpl extends AbstractService implements NoticeService{
 	@Autowired
 	private NoticeDAO noticeDao;
 	
-	public List<NoticeDTO> noticeList() {
-		List<NoticeDTO> list = noticeDao.noticeList();
+	public List<NoticeDTO> noticeList(int pageNo) {
+		List<NoticeDTO> list = noticeDao.noticeList(pageNo);
 		return list;
 	}
 
 	public NoticeDTO detail(int no) {
-		// TODO Auto-generated method stub
-		return null;
+		NoticeDTO dto = noticeDao.detail(no);
+		return dto;
 	}
 
-	@Override
 	public int noticeWrite(NoticeDTO dto) {
-		// TODO Auto-generated method stub
-		return 0;
+		return noticeDao.noticeWrite(dto);
 	}
 
-	@Override
 	public int noticeDel(int no) {
-		// TODO Auto-generated method stub
-		return 0;
+		return noticeDao.noticeDel(no);
+	}
+
+	public int noticeUpdate(NoticeDTO dto) {
+		return noticeDao.noticeUpdate(dto);
 	}
 
 	@Override
-	public int noticeUpdate(NoticeDTO dto) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int totalCount() {
+		return noticeDao.totalCount();
 	}
+	
+	
 
 }

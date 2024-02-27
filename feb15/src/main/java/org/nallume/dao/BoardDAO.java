@@ -55,6 +55,10 @@ public class BoardDAO extends AbstractDAO{
 		return sqlSession.insert("board.likeUp", dto);
 	}
 
+	public int detailUpdate(BoardDTO dto) {
+		return sqlSession.update("board.update", dto);
+	}
+
 /*	public int readCheck(BoardDTO dto) {
 		return sqlSession.selectOne("board.readCheck", dto);
 	}*/
