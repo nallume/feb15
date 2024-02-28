@@ -21,4 +21,8 @@ public class LoginDAO extends AbstractDAO {
 		sqlSession.update("login.mcountReset", loginDTO);		
 	}
 
+	public int join(MemberDTO dto) {
+		return sqlSession.insert("login.join", dto);
+	}
+
 }

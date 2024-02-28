@@ -2,6 +2,7 @@ package org.nallume.service;
 
 import org.nallume.dao.LoginDAO;
 import org.nallume.dto.LoginDTO;
+import org.nallume.dto.MemberDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,10 @@ public class LoginService {
 
 	public void mcountReset(LoginDTO loginDTO) {
 		loginDao.mcountReset(loginDTO);
+	}
+
+	public int join(MemberDTO dto) {
+		return loginDao.join(dto);
 	}
 
 	

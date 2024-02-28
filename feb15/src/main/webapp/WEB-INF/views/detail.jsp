@@ -38,6 +38,12 @@
         <link href="css/board.css" rel="stylesheet" />
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <!-- summer note -->
+		<script src="/js/summernote/summernote-lite.js"></script>
+		<script src="/js/summernote/lang/summernote-ko-KR.js"></script>
+		<script src="/js/summernote/summernote-bs4.min.js"></script>
+		<link href="/css/summernote/summernote-lite.css" rel="stylesheet">
+		<link href="/css/summernote/summernote-bs4.min.css" rel="stylesheet">
         <script type="text/javascript">
         function deletePost(){
         	Swal.fire({
@@ -133,7 +139,8 @@
                 		</div>
                 		<div class="row p-2 bg-secondary">
                 			<div class="col align-middle text-start">${detail.mname}<c:if test="${detail.mid eq sessionScope.mid }">
-                			<img alt="edit" src="./img/edit.png" title="글 수정" onclick="edit(${detail.board_no})">
+                			<button type="button" data-bs-toggle="modal" data-bs-target="#edit">
+                			<img alt="edit" src="./img/edit.png" title="글 수정"></button>                			
                 			<img alt="delete" src="./img/delete.png" title="글 삭제" onclick="deletePost(${detail.board_no})"></c:if></div>
                 			<div class="col align-middle text-end">${detail.board_date}/${detail.board_ip }</div>
                 		</div>
@@ -207,5 +214,24 @@
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+        <script type="text/javascript">
+        $(function(){
+    		$('#summernote').summernote({
+    			lang: 'ko-KR', // default: 'en-US'
+    			height: 600,
+    			fontNames : ['D2Coding', 'Arial Black', 'Comic Sans MS', 'Courier New'],
+    			toolbar: [
+    			    // [groupName, [list of button]]
+    			    ['style', ['bold', 'italic', 'underline', 'clear']],
+    			    /* ['font', ['strikethrough', 'superscript', 'subscript']], */
+    			    ['fontname', ['fontname','fontsize', 'color']],
+    			    ['para', ['ul', 'ol', 'paragraph']],
+    			    /* ['height', ['height']] */
+    			    ['table', ['table','link', 'picture', 'video']],
+    			    ['view', ['fullscreen', 'codeview', 'help']]
+    			  ]
+    		});
+    	});
+        </script>
     </body>
 </html>

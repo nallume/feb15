@@ -91,5 +91,47 @@ public class LoginController {
 		
 	}
 	
+	//24-02-28 어플리케이션 테스트 수행
+	/*
+	 스케치 - 와이어프레임 - 목업 - 프로토타입 - 스토리보드
+	 
+	 * 와이어프레임 : 기획 단계의 기초를 제작하는 단게. 페이지의 레이아웃이나 UI요소 등 뼈대
+	 * 목업 : 와이어프레임보다 조금 더 설계 화면과 유사하게 만드는 것. 정적 모델링
+	 * 프로토타입 : 다양한 인터렉션이 결합되어 실제 서비스처럼 동작하는 것.(클릭하면 넘어가게)
+	 * 스토리보드 : 설명, 기능 명세서, 와이어프레임, 프로세스, 정책 등등 설계문서
+	 
+	 화면부터 구성해야(스케치) 뭐가 필요한지가 나옴
+	 
+	 */
+
+	//아이디 = 중복검사
+	//비밀번호 1 / 비밀번호 2
+	//이메일 -> 중복불가
+	//닉네임	
+	@GetMapping("/join")
+	public String join() {
+		return "join";
+	}
+	
+	@PostMapping("/join")
+	public String join(HttpServletRequest request) {
+		/*
+		 * System.out.println(request.getParameter("id"));
+		 * System.out.println(request.getParameter("pw"));
+		 * System.out.println(request.getParameter("name"));
+		 * System.out.println(request.getParameter("email"));
+		 */
+		
+		MemberDTO dto = new MemberDTO();
+		dto.setMid(request.getParameter("id"));
+		dto.setMpw(request.getParameter("pw"));
+		dto.setMname(request.getParameter("name"));
+		dto.setMemail(request.getParameter("email"));
+		
+		int result = loginService.join(dto);
+		System.out.println("결과 : " + result);
+		return "redirect:/login";
+	}
+	
 	
 }
