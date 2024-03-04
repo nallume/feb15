@@ -10,5 +10,6 @@
 		<typeAlias type="org.nallume.dto.LoginDTO" alias="loginDTO" />
 		<typeAlias type="org.nallume.dto.GalleryDTO" alias="galleryDTO" />
 		<typeAlias type="org.nallume.dto.NoticeDTO" alias="noticeDTO" />
+		<typeAlias type="org.nallume.dto.SearchDTO" alias="searchDTO" />
 	</typeAliases>	
 </configuration>

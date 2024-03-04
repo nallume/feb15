@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.nallume.dto.BoardDTO;
 import org.nallume.dto.CommentDTO;
+import org.nallume.dto.SearchDTO;
 import org.nallume.dto.WriteDTO;
 import org.nallume.service.BoardService;
 import org.nallume.util.Util;
@@ -36,7 +37,12 @@ public class BoardController {
 	
 	//페이징 추가하기 24-02-20
 	@GetMapping("/board")
-	public String board(@RequestParam(value = "pageNo", required = false) String no, Model model) {
+	public String board(@RequestParam(value = "pageNo", required = false) String no,
+			@RequestParam(value = "search", required = false) String search,
+			Model model) {
+		
+		//System.out.println("검색어 : " + search);
+		
 		//pageNo가 오지 않는다면
 		int currentPageNo = 1;
 		if(util.str2Int2(no) > 0) { //여기 수정해야해
@@ -44,7 +50,7 @@ public class BoardController {
 		}
 		
 		//전체 글 수 뽑아오기 totalCount
-		int totalRecordCount = boardService.totalCount();
+		int totalRecordCount = boardService.totalCount(search);
 		//System.out.println("전체 글 수 : " + totalRecordCount);
 		
 		//pagination
@@ -54,10 +60,18 @@ public class BoardController {
 		paginationInfo.setPageSize(10); //페이징 리스트의 사이즈 , 10페이지씩 보이기
 		paginationInfo.setTotalRecordCount(totalRecordCount);//전체 게시물 건수
 		
-		List<BoardDTO> list = boardService.boardList(paginationInfo.getFirstRecordIndex()); //첫번째 페이지 번호 가져오는 메소드
+		//List<BoardDTO> list = boardService.boardList(paginationInfo.getFirstRecordIndex()); //첫번째 페이지 번호 가져오는 메소드
+		
+		SearchDTO searchDto = new SearchDTO();
+		searchDto.setPageNo(paginationInfo.getFirstRecordIndex());
+		searchDto.setSearch(search);
+		
+		List<BoardDTO> list = boardService.boardList(searchDto);
 		model.addAttribute("list", list);
 		//페이징 관련 정보가 있는 PaginationInfo객체를 모델에 반드시 넣어준다.
 		model.addAttribute("paginationInfo", paginationInfo);
+		model.addAttribute("pageNo", currentPageNo);
+		//model.addAttribute("search", search);
 		return "board";
 	}
 	
@@ -206,8 +220,7 @@ public class BoardController {
 		return "redirect:/error";
 	}
 	
-	
-	
+
 	
 	
 }

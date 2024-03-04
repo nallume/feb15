@@ -38,6 +38,13 @@
 	</repositories>
 
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.json/json 24-02-29 -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20240205</version>
+		</dependency>
+
 		<!-- resource -->
 		<dependency>
 			<groupId>javax.annotation</groupId>

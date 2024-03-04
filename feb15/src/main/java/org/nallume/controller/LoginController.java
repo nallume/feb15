@@ -131,7 +131,8 @@ public class LoginController {
 		int result = loginService.join(dto);
 		System.out.println("결과 : " + result);
 		return "redirect:/login";
-	}
+	}	
+
 	
 	
 }

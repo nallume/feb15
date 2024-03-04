@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="admin">
+
+	<resultMap type="commentDTO" id="commentDTOmap">
+		<result column="cno" property="no"/>
+		<result column="board_no" property="board_no"/>
+		<result column="ccomment" property="comment"/>
+		<result column="cdate" property="cdate"/>
+		<result column="clike" property="clike"/>
+		<result column="mid" property="mid"/>
+		<result column="mname" property="mname"/>
+		<result column="cip" property="cip"/>
+		<result column="mno" property="mno"/>
+	</resultMap>
+
+	<select id="boardList" resultType="boardDTO">
+		SELECT b.board_no, b.board_title, b.board_content, m.mname, b.board_date, 
+		(SELECT COUNT(*) FROM comment WHERE board_no=b.board_no) AS comment, 
+		(SELECT COUNT(*) FROM visitcount WHERE board_no=b.board_no) AS board_count, b.board_del 
+		FROM board b JOIN member m ON b.mno=m.mno 
+	</select>
+	
+</mapper>

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import org.nallume.dao.BoardDAO;
 import org.nallume.dto.BoardDTO;
 import org.nallume.dto.CommentDTO;
+import org.nallume.dto.SearchDTO;
 import org.nallume.dto.WriteDTO;
 import org.nallume.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,8 @@ public class BoardService extends AbstractService {
 	@Autowired
 	private BoardDAO boardDAO;
 	
-	public List<BoardDTO> boardList(int PageNo){		
-		return boardDAO.boardList(PageNo);
+	public List<BoardDTO> boardList(SearchDTO searchDto){		
+		return boardDAO.boardList(searchDto);
 	}
 	
 	public Map<String, Object> detail(int no) {
@@ -74,8 +75,8 @@ public class BoardService extends AbstractService {
 		return boardDAO.postDel(dto);
 	}
 
-	public int totalCount() {
-		return boardDAO.totalCount();
+	public int totalCount(String search) {
+		return boardDAO.totalCount(search);
 	}
 
 	public int deleteComment(int no, int cno) {
@@ -94,6 +95,6 @@ public class BoardService extends AbstractService {
 		return boardDAO.detailUpdate(dto);
 	}
 
-
+	
 	
 }

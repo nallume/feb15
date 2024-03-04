@@ -17,9 +17,18 @@
 		<result column="mno" property="mno"/>
 	</resultMap>
 
-	<select id="boardList" parameterType="Integer" resultType="boardDTO">
-		SELECT board_no, board_title, mname, board_date, board_count, comment 
-		FROM boardview LIMIT #{pageNo}, 10 
+	<select id="boardList" parameterType="searchDTO" resultType="boardDTO">
+		SELECT b.board_no, b.board_title, b.board_content, m.mname, b.board_date, 
+		(SELECT COUNT(*) FROM comment WHERE board_no=b.board_no) AS comment 
+		FROM board b JOIN member m ON b.mno=m.mno 
+		WHERE board_del='1' 
+		<if test="search != null">
+			AND board_title LIKE CONCAT('%', #{search}, '%') 
+			OR board_content LIKE CONCAT('%', #{search}, '%') 
+			OR mname LIKE CONCAT('%', #{search}, '%') 
+		</if>
+		ORDER BY b.board_no DESC 
+		LIMIT #{pageNo}, 10 
 	</select>
 	
 	<select id="detail" parameterType="int" resultType="Map">
@@ -62,8 +71,14 @@
 		]]>
 	</update>
 	
-	<select id="totalCount" resultType="Integer">
-		SELECT COUNT(*) FROM boardview
+	<select id="totalCount" parameterType="String" resultType="Integer">
+		SELECT COUNT(*) FROM board b JOIN member m ON b.mno=m.mno 
+		WHERE board_del = '1'
+		<if test="search != null">
+			AND board_title LIKE CONCAT('%', #{search}, '%') 
+			OR board_content LIKE CONCAT('%', #{search}, '%') 
+			OR mname LIKE CONCAT('%', #{search}, '%') 
+		</if>
 	</select>
 	
 	<update id="deleteComment" parameterType="commentDTO">

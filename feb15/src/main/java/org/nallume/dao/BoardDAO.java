@@ -5,14 +5,15 @@ import java.util.Map;
 
 import org.nallume.dto.BoardDTO;
 import org.nallume.dto.CommentDTO;
+import org.nallume.dto.SearchDTO;
 import org.nallume.dto.WriteDTO;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class BoardDAO extends AbstractDAO{
 	
-	public List<BoardDTO> boardList(int pageNo){
-		return sqlSession.selectList("board.boardList", pageNo);
+	public List<BoardDTO> boardList(SearchDTO searchDto){
+		return sqlSession.selectList("board.boardList", searchDto);
 	}
 	
 	public Map<String, Object> detail(int no) {
@@ -39,8 +40,8 @@ public class BoardDAO extends AbstractDAO{
 		return sqlSession.update("board.postDel", dto);
 	}
 
-	public int totalCount() {
-		return sqlSession.selectOne("board.totalCount");
+	public int totalCount(String search) {
+		return sqlSession.selectOne("board.totalCount", search);
 	}
 
 	public int deleteComment(CommentDTO dto) {		

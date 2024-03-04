@@ -50,9 +50,14 @@
         	  }
         	});
         
-        $(function(){
-			
-        	$('.id-alert, .pw-alert, .name-alert, .email-alert').hide();
+        $(function(){			
+        	
+        	$('#join').attr("disabled", true);
+        	$('#password1').attr("disabled", true);
+        	$('#password2').attr("disabled", true);
+        	$('#name').attr("disabled", true);
+        	$('#email').attr("disabled", true);
+        	$('.pw-alert, .name-alert, .email-alert').hide();        	
         	
         	$('#password1').on("change keyup paste", function(){
         		if($('#password1').val().length < 3){
@@ -71,6 +76,7 @@
         			$('.pw-alert').show();
         		} else {
 	        		$('.pw-alert').hide();
+	            	$('#name').attr("disabled", false);
         		}     		
         	});
         	
@@ -78,6 +84,7 @@
 	        	$('.name-alert').show();
         		if($('#name').val().length > 2 && $('#name').val().length < 11 ){
 		        	$('.name-alert').hide();
+		        	$('#email').attr("disabled", false);
         		}        		
         	});
         	
@@ -85,10 +92,48 @@
         		let email = $('#email').val();
         		let atIndex = email.indexOf('@');
         		if(email.indexOf('@') != -1 && email.indexOf('@', atIndex + 1) == -1){				
+        			$('.email-alert').hide();
+                	$('#join').attr("disabled", false);
         		} else {
-        			$('.email-alert').show();	        			
+        			$('.email-alert').show();   			
+                	$('#join').attr("disabled", true);
         		}
         	});
+        	
+        	$('#idCheck').click(function(){
+        		let id = $('#id').val();
+        		//Swal.fire('ID검사', '아이디 : '+id, 'success');
+        		//3글자 이상, 10글자 이하 + 특수기호 허용, 공백 막기
+        		let tabcheck = id.indexOf(' ');
+
+        		if(id.length < 3 || id.length > 10 || tabcheck != -1) {
+        			Swal.fire('올바르지 않은 ID', 'ID는 3자 이상 10자 이하로 공백이 없어야 합니다.', 'warning');
+        		} else {
+        			$.ajax({
+        				url:'./idCheck',
+        				type: 'post',
+        				//dataType: 'text', 
+        				dataType: 'json', 
+        				data : {'id' : id }, 
+        				success : function(data){
+        					//값 확인
+        					//alert(data.count);
+        					if(data.count == 1){ //오는 데이터에서 count키의 값을 검사
+				        		Swal.fire('ID검사', '이미 존재하는 아이디입니다.', 'error');
+        					} else {
+				        		Swal.fire('ID검사', '사용 가능한 아이디입니다', 'success');
+				            	$('#password1').attr("disabled", false);
+				            	$('#password2').attr("disabled", false);
+        					}       					
+        				},
+        				error : function(error){
+			        		Swal.fire('ID검사', '문제 발생', 'error');        					
+        				}
+        			});
+        		}
+        		
+        	});
+        	
         	
         	$('#join').click(function(){
         		let id = $('#id').val();
@@ -96,7 +141,7 @@
         		let pw2 = $('#password2').val();
         		let name = $('#name').val();
         		let email = $('#email').val();
-        		Swal.fire('회원가입', id + '/' + pw1 + '/' + pw2 + '/' + name + '/' + email, 'success');
+        		//Swal.fire('회원가입', id + '/' + pw1 + '/' + pw2 + '/' + name + '/' + email, 'success');
         		
         		//id 중복검사, 길이 검사, 패스워드 길이, 재입력 검사, 이메일 중복 금지, @반드시 포함하는지 전부 통과하고 가입되게 하기
         		
@@ -133,12 +178,9 @@
 				<label for="id" class="col-sm-2 col-form-label">아이디</label>
 				<div class="col-sm-7">
 					<input type="text" id="id" class="form-control" placeholder="아이디를 입력하세요">
-					<div class="id-alert">
-						<p class="idAlert">id는 영문 5글자 이상</p>
-					</div>
 				</div>
 				<div class="col-sm-3">
-					<button type="button" id="idCheck" class="btn btn-info w-100" onclick="idCheck()">중복 검사</button>				
+					<button type="button" id="idCheck" class="btn btn-info w-100">중복 검사</button>				
 				</div>
 			</div>
 			<div class="mb-3 row">
