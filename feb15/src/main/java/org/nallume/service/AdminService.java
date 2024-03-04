@@ -2,19 +2,15 @@ package org.nallume.service;
 
 import java.util.List;
 
-import org.nallume.dao.AdminDAO;
 import org.nallume.dto.BoardDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.nallume.dto.SearchDTO;
 
-@Service
-public class AdminService extends AbstractService{
-	
-	@Autowired
-	AdminDAO adminDao;
-	
-	public List<BoardDTO> boardList() {
-		return adminDao.boardList();
-	}
+public interface AdminService {
+
+	List<BoardDTO> boardList(SearchDTO searchDTO);
+
+	int totalRecordCount(SearchDTO searchDTO);
+
+	int postDel(int no);
 
 }

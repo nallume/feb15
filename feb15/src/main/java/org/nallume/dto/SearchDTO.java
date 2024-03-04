@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SearchDTO {
-	private int pageNo;
+	private int pageNo, recordCountPerPage, searchTitle;
 	private String search;
 }

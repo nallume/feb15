@@ -2,15 +2,17 @@ package org.nallume.controller;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.nallume.dto.BoardDTO;
 import org.nallume.dto.SearchDTO;
 import org.nallume.service.AdminService;
-import org.nallume.service.BoardService;
 import org.nallume.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -22,8 +24,11 @@ public class AdminController {
 //administrator = admin
 //root
 	
+	@Resource(name="adminService")
+	private AdminService adminService;
+	
 	@Autowired
-	AdminService adminService;
+	Util util;
 
 	
 	@GetMapping("/") //얘는 경로  localhost/admin
@@ -46,19 +51,79 @@ public class AdminController {
 		return "admin/join";
 	}
 	
-	@GetMapping("/boardList")
-	public String boardList(Model model) {		
-		List<BoardDTO> list = adminService.boardList();
+	@GetMapping("/board")
+	public String board(@RequestParam(name = "pageNo", defaultValue = "1") String pageNo, 
+			@RequestParam(name = "search", required = false) String search, 
+			@RequestParam(name = "perPage", defaultValue = "1", required = false) String perPage, 
+			@RequestParam(name = "searchTitle", required = false) String searchTitle, 
+			Model model) {
+		//페이징 + 검색 + 한 화면에 보이는 게시글 수 변경
+		
+		//검색
+		SearchDTO searchDTO = new SearchDTO();
+		searchDTO.setSearch(search);
+		searchDTO.setSearchTitle(util.str2Int2(searchTitle));
+		
+		//전체 글 수 뽑기
+		int totalRecordCount = adminService.totalRecordCount(searchDTO);
+		
+		//페이징
+		PaginationInfo paginationInfo = new PaginationInfo();
+		paginationInfo.setCurrentPageNo(util.str2Int2(pageNo));
+		paginationInfo.setPageSize(10);
+		paginationInfo.setRecordCountPerPage(util.str2Int2(perPage) * 10); // 1 -> 10
+		paginationInfo.setTotalRecordCount(totalRecordCount);
+		
+		//검색 페이징 설정
+		searchDTO.setPageNo(paginationInfo.getFirstRecordIndex());
+		searchDTO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+
+		
+		List<BoardDTO> list = adminService.boardList(searchDTO);
 		model.addAttribute("list", list);
-		return "admin/boardList";
+		model.addAttribute("paginationInfo", paginationInfo);
+		model.addAttribute("pageNo", pageNo);
+		model.addAttribute("perPage", perPage);
+		model.addAttribute("search", search);
+		model.addAttribute("searchTitle", searchTitle);
+		model.addAttribute("active", "board");
+		return "admin/board";
 	}
-	@GetMapping("/commentList")
-	public String commentList() {
-		return "admin/commentList";
+	
+	
+	
+	
+	@GetMapping("/comment")
+	public String comment(Model model) {
+		model.addAttribute("active", "board");
+		return "admin/comment";
 	}
 
-	@GetMapping("/memberList")
-	public String memberList() {
-		return "admin/memberList";
+	@GetMapping("/member")
+	public String member(Model model) {
+		model.addAttribute("active", "member");
+		return "admin/member";
 	}
+	
+	
+	@GetMapping("/postDel")
+	public String postDel(@RequestParam("no") String no, 
+			@RequestParam(name = "pageNo", defaultValue = "1") String pageNo, 
+			@RequestParam(name = "search", required = false) String search, 
+			@RequestParam(name = "perPage", defaultValue = "1", required = false) String perPage, 
+			@RequestParam(name = "searchTitle", required = false) String searchTitle ) {
+		int result = adminService.postDel(util.str2Int2(no));
+		//검색어 (search)가 한글이면 오류난당 --ajax로 하는 수밖에...
+		//return "redirect:/admin/board?pageNo="+pageNo+"&perPage="+perPage+"&searchTitle="+searchTitle+"&search="+search;
+		return "redirect:/admin/board";
+	}
+	
+	@PostMapping("/postDel")
+	public String postDel(@RequestParam("no") String no, Model model) {
+		int result = adminService.postDel(util.str2Int2(no));
+		model.addAttribute("result", result);
+		return "redirect:/admin/board";
+	}
+	
+	
 }

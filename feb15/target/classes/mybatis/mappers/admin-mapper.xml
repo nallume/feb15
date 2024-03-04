@@ -17,11 +17,50 @@
 		<result column="mno" property="mno"/>
 	</resultMap>
 
-	<select id="boardList" resultType="boardDTO">
-		SELECT b.board_no, b.board_title, b.board_content, m.mname, b.board_date, 
+	<select id="boardList" parameterType="searchDTO" resultType="boardDTO">
+		SELECT b.board_no, b.board_title, m.mno, m.mname, b.board_date, 
 		(SELECT COUNT(*) FROM comment WHERE board_no=b.board_no) AS comment, 
-		(SELECT COUNT(*) FROM visitcount WHERE board_no=b.board_no) AS board_count, b.board_del 
+		(SELECT COUNT(*) FROM visitcount WHERE board_no=b.board_no) AS board_count, b.board_del, b.board_ip 
 		FROM board b JOIN member m ON b.mno=m.mno 
+		<where>
+			<if test="search != null">
+				<if test="searchTitle == 1">
+					board_title LIKE CONCAT('%', #{search}, '%') 
+				</if>
+				<if test="searchTitle == 2">
+					board_content LIKE CONCAT('%', #{search}, '%') 
+				</if>
+				<if test="searchTitle == 3">
+					mname LIKE CONCAT('%', #{search}, '%') 
+				</if>
+			</if>
+		</where>
+		ORDER BY board_no DESC LIMIT #{pageNo}, #{recordCountPerPage};
 	</select>
+	
+	<select id="totalRecordCount" parameterType="searchDTO" resultType="Integer">
+		SELECT COUNT(*) 
+		FROM board b JOIN member m ON b.mno=m.mno 
+		<where>
+			<if test="search != null">
+				<if test="searchTitle == 1">
+					board_title LIKE CONCAT('%', #{search}, '%') 
+				</if>
+				<if test="searchTitle == 2">
+					board_content LIKE CONCAT('%', #{search}, '%') 
+				</if>
+				<if test="searchTitle == 3">
+					mname LIKE CONCAT('%', #{search}, '%') 
+				</if>
+			</if>
+		</where>
+	</select>
+	
+	<update id="postDel" parameterType="Integer">
+		UPDATE board SET board_del = CASE 
+		WHEN board_del='0' THEN '1' 
+		ELSE '0' END 
+		WHERE board_no=#{no}
+	</update>
 	
 </mapper>
