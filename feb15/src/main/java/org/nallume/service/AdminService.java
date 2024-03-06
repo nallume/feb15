@@ -13,4 +13,6 @@ public interface AdminService {
 
 	int postDel(int no);
 
+	BoardDTO detail(int str2Int2);
+
 }

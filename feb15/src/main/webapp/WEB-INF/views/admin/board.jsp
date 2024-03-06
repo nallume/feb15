@@ -24,6 +24,11 @@
     <link href="/admin/css/sb-admin-2.min.css" rel="stylesheet">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script type="text/javascript">
+	function detail(no){
+		//window.open('주소', '타이틀', '크기/설정');
+		window.open('./detail?no='+no, '톺아보기', 'width=700px, height=700px, scrollbars=auto');
+	}
+	
 	function linkPage(pageNo){
 		location.href = "./board?pageNo="+pageNo+"&perPage=${perPage}&searchTitle=${searchTitle}&search=${search}"; 
 	}
@@ -46,10 +51,10 @@
 		});
 		
 		$('.chDel').click(function(){
-			let eyes = $(this);
-			let delno = $(this).children('.del').val();
-			let no = $(this).parent().children(".bno").text();
-			let tableRow = $(this).parents('.tRow');
+			var icon = $(this).children('.icon');
+			let del = $(this).children('.del');
+			let no = $(this).parent().children('.bno').text();
+			
 			
 			$.ajax({
 				url: './postDel', 
@@ -58,12 +63,12 @@
 				data: {'no': no},
 				success: function(result){
 					if(result == 1){
-						if(delno == 1){
-							delno.val(0);
-							eyes.attr('class', 'fa fa-eye-slash');
-						} else{
-							delno.val(1);
-							eyes.attr('class', 'fa fa-eye');							
+						if(del.val() == 1){
+							del.val("0");
+							icon.removeClass('fa-eye').addClass('fa-eye-slash');
+						} else {
+							del.val("1");
+							icon.removeClass('fa-eye-slash').addClass('fa-eye');							
 						}
 					} else {
 						alert("실패");
@@ -118,9 +123,10 @@
                     			<option value="1" <c:if test="${searchTitle eq 1 }">selected="selected"</c:if>>제목 검색</option>
                     			<option value="2" <c:if test="${searchTitle eq 2 }">selected="selected"</c:if>>본문 검색</option>
                     			<option value="3" <c:if test="${searchTitle eq 3 }">selected="selected"</c:if>>작성자 검색</option>
+                    			<option value="4" <c:if test="${searchTitle eq 3 }">selected="selected"</c:if>>ip 검색</option>
                     		</select>
 	                    	<input type="text" name="search" class="form-control" id="search" value="${search }">
-    	                	<button type="button" class="btn btn-secondary" id="searchBtn">검색</button>
+    	                	<button type="button" class="btn bg-gradient-light" id="searchBtn">검색</button>
                     	</div>
     	                <button type="button" class="btn btn-secondary col-1" id="reset">초기화</button>
                     </div>
@@ -131,6 +137,7 @@
                     			<th>글번호</th>
                     			<th>제목</th>
                     			<th>작성자</th>
+                    			<th>조회수</th>
                     			<th>날짜</th>
                     			<th>ip</th>
                     			<th>삭제</th>
@@ -138,21 +145,26 @@
                     	</thead>
                     	<tbody>
                     		<c:forEach items="${list }" var="row">
-	                    		<tr class="">
+	                    		<tr>
     	                			<td class="bno">${row.board_no }</td>
-        	            			<td>${row.board_title }</td>
+        	            			<td onclick="detail(${row.board_no })">
+        	            			${row.board_title }
+        	            			</td>
             	        			<td><a href="./board?searchTitle=3&search=${row.mname }">${row.mname }</a>
             	        			</td>
+            	        			<td>${row.board_count }</td>
                 	    			<td>${row.board_date }</td>
-                    				<td>${row.board_ip }</td>
+                    				<td>
+                    				<a href="./board?searchTitle=4&search=${row.board_ip }">${row.board_ip }</a>
+                    				</td>
                     				<td class="chDel">
                     				<input type="hidden" class="del" value="${row.board_del }">
                     				<c:choose>
    	                					<c:when test="${row.board_del eq 1}">
-       	            						<i class="fa fa-eye" aria-hidden="true"/>
+       	            						<i class="fa fa-eye icon" aria-hidden="true"/>
            	        					</c:when>
                	    					<c:otherwise>                    						
-                   							<i class="fa fa-eye-slash" aria-hidden="true"/>
+                   							<i class="fa fa-eye-slash icon" aria-hidden="true"/>
                    						</c:otherwise>
                    					</c:choose>
                     				</td>

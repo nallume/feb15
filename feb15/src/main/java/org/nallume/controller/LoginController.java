@@ -43,7 +43,8 @@ public class LoginController {
 		LoginDTO login = loginService.login(loginDTO);
 		
 		if(login.getCount() == 1) {			
-			if(login.getPw().equals(loginDTO.getPw()) && login.getMcount() < 5) {				
+			if(login.getPw().equals(loginDTO.getPw()) && login.getMcount() < 5) {
+				
 				//세션 만들기
 				HttpSession session = request.getSession();
 				session.setAttribute("mid", id);

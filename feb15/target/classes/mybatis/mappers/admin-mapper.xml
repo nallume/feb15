@@ -18,7 +18,9 @@
 	</resultMap>
 
 	<select id="boardList" parameterType="searchDTO" resultType="boardDTO">
-		SELECT b.board_no, b.board_title, m.mno, m.mname, b.board_date, 
+		SELECT b.board_no, b.board_title, m.mno, m.mname, 
+		if(date_format(current_timestamp(),'%Y-%m-%d') = date_format(`b`.`board_date`,'%Y-%m-%d'),
+		date_format(`b`.`board_date`,'%H:%i'),date_format(`b`.`board_date`,'%m-%d')) AS board_date, 
 		(SELECT COUNT(*) FROM comment WHERE board_no=b.board_no) AS comment, 
 		(SELECT COUNT(*) FROM visitcount WHERE board_no=b.board_no) AS board_count, b.board_del, b.board_ip 
 		FROM board b JOIN member m ON b.mno=m.mno 
@@ -32,6 +34,9 @@
 				</if>
 				<if test="searchTitle == 3">
 					mname LIKE CONCAT('%', #{search}, '%') 
+				</if>
+				<if test="searchTitle == 4">
+					b.board_ip = #{search} 
 				</if>
 			</if>
 		</where>
@@ -52,6 +57,9 @@
 				<if test="searchTitle == 3">
 					mname LIKE CONCAT('%', #{search}, '%') 
 				</if>
+				<if test="searchTitle == 4">
+					b.board_ip = #{search} 
+				</if>
 			</if>
 		</where>
 	</select>
@@ -62,5 +70,15 @@
 		ELSE '0' END 
 		WHERE board_no=#{no}
 	</update>
+	
+	<select id="detail" parameterType="Integer" resultType="boardDTO">
+		SELECT b.board_no, b.board_title, b.board_content, m.mid, m.mname, 
+		if(date_format(current_timestamp(),'%Y-%m-%d') = date_format(`b`.`board_date`,'%Y-%m-%d'),
+		date_format(`b`.`board_date`,'%H:%i'),date_format(`b`.`board_date`,'%m-%d')) AS board_date, 
+		(SELECT COUNT(*) FROM comment WHERE board_no=b.board_no) AS comment, 
+		(SELECT COUNT(*) FROM visitcount WHERE board_no=b.board_no) AS board_count, b.board_ip 
+		FROM board b JOIN member m ON b.mno=m.mno 
+		WHERE b.board_no =#{no}
+	</select>
 	
 </mapper>

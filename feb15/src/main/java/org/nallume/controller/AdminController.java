@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
@@ -119,11 +120,21 @@ public class AdminController {
 	}
 	
 	@PostMapping("/postDel")
-	public String postDel(@RequestParam("no") String no, Model model) {
+	public @ResponseBody String postDel(@RequestParam("no") String no) {
 		int result = adminService.postDel(util.str2Int2(no));
-		model.addAttribute("result", result);
-		return "redirect:/admin/board";
+		
+		if (result == 1) {
+			return "1"; // 삭제 성공 시 "1" 반환
+		} else {
+		    return "0"; // 삭제 실패 시 "0" 반환
+		}
 	}
 	
+	@GetMapping("/detail")
+	public String detail(@RequestParam("no") String no, Model model) {
+		BoardDTO dto = adminService.detail(util.str2Int2(no));
+		model.addAttribute("detail", dto);
+		return "admin/detail";
+	}
 	
 }
